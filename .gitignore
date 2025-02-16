@@ -1,0 +1,43 @@
+# Flutter/Dart/Pub related
+.dart_tool/
+.packages
+.pub-cache/
+build/
+# If you're building for web, exclude the built output:
+web/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# iOS
+ios/Flutter/.generated/
+ios/.symlinks/
+ios/Pods/
+Podfile.lock
+*.xcarchive
+*.xcworkspace
+
+# Android
+.gradle/
+**/local.properties
+**/GeneratedPluginRegistrant.java
+**/GeneratedPluginRegistrant.kt
+
+# Visual Studio Code
+.vscode/
+
+# IntelliJ / Android Studio
+.idea/
+*.iml
+android/*.iml
+
+# macOS
+.DS_Store
+
+# Windows executables, logs, etc.
+*.exe
+*.dll
+*.bat
+*.log
+
+# Linux shared objects
+*.so
