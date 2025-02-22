@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
+import 'package:hurrigame/game_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'BLE + Audioplayers 6.x Demo',
+      title: 'Hurrigame',
       theme: ThemeData(primarySwatch: Colors.blue),
       home: const BleAudioPage(),
     );
@@ -31,9 +32,6 @@ class BleAudioPage extends StatefulWidget {
 class _BleAudioPageState extends State<BleAudioPage> {
   final flutterBlue = FlutterBlue.instance;
   StreamSubscription<ScanResult>? _scanSubscription;
-  bool _isScanning = false;
-  String _statusText = 'Press SCAN to discover "HurriButton_Bullshit"';
-  BluetoothDevice? _hurriButtonDevice;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
   static const _audioControlChannel = MethodChannel('com.example.audio_control');
@@ -44,6 +42,7 @@ class _BleAudioPageState extends State<BleAudioPage> {
     _audioPlayer.onPlayerComplete.listen((event) {
       debugPrint("Audio playback complete. Now deactivating audio session.");
       _deactivateAudioSession();
+      _startScan();
     });
     _configureIosAudioSession();
   }
@@ -74,28 +73,15 @@ class _BleAudioPageState extends State<BleAudioPage> {
   void _startScan() async {
     await _stopScan();
 
-    setState(() {
-      _isScanning = true;
-      _statusText = 'Scanning...';
-      _hurriButtonDevice = null;
-    });
-
     _scanSubscription = flutterBlue.scan().listen((result) {
       final device = result.device;
       final deviceName = device.name.trim();
 
       // Look for the "HurriButton_Bullshit" name
       if (deviceName == 'HurriButton_Bullshit') {
-        setState(() {
-          _hurriButtonDevice = device;
-          _statusText = 'Found $deviceName (${device.id})';
-        });
-
         _playBeep();    // Duck others and play beep
-        _stopScan();
       }
     }, onError: (error) {
-      setState(() => _statusText = 'Scan error: $error');
       _stopScan();
     });
   }
@@ -105,7 +91,6 @@ class _BleAudioPageState extends State<BleAudioPage> {
       await _scanSubscription!.cancel();
       _scanSubscription = null;
     }
-    setState(() => _isScanning = false);
     await flutterBlue.stopScan();
   }
 
@@ -115,7 +100,7 @@ class _BleAudioPageState extends State<BleAudioPage> {
     try {
       await _audioPlayer.play(AssetSource('sounds/2024.mp3'));
     } catch (e) {
-      setState(() => _statusText = 'Error playing sound: $e');
+      print(e);
     }
   }
 
@@ -128,21 +113,18 @@ class _BleAudioPageState extends State<BleAudioPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('BLE + Audioplayers')),
+      //appBar: AppBar(title: const Text('Hurrigame')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(_statusText),
-            const SizedBox(height: 16),
-            if (_hurriButtonDevice != null)
-              Text('Device: ${_hurriButtonDevice!.name} (${_hurriButtonDevice!.id})'),
+            GameButton(Colors.red),
+            SizedBox(height: 20),
+            GameButton(Colors.green),
+            SizedBox(height: 20),
+            GameButton(Colors.blue),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _isScanning ? _stopScan : _startScan,
-        child: Icon(_isScanning ? Icons.stop : Icons.search),
       ),
     );
   }
