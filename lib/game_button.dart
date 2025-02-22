@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hurrigame/sound_manager.dart';
 
 class GameButton extends StatelessWidget {
-  GameButton(this.color, {super.key});
+  const GameButton(this.color, this.soundManager, {super.key});
 
-  var color = Colors.red;
+  final Color color;
+  final SoundManager soundManager;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class GameButton extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        // onPressed logic
+        soundManager.playBullshit();
       },
       child: const Text(
         '',

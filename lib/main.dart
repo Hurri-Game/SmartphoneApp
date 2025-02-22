@@ -1,9 +1,7 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/services.dart';
+import 'package:hurrigame/bluetooth_manager.dart';
 import 'package:hurrigame/game_button.dart';
+import 'package:hurrigame/sound_manager.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,83 +28,23 @@ class BleAudioPage extends StatefulWidget {
 }
 
 class _BleAudioPageState extends State<BleAudioPage> {
-  final flutterBlue = FlutterBlue.instance;
-  StreamSubscription<ScanResult>? _scanSubscription;
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
-  static const _audioControlChannel = MethodChannel('com.example.audio_control');
+  late SoundManager soundManager;
+  late BluetoothManager bluetoothManager;
 
   @override
   void initState() {
-    super.initState();    // Listen for playback completion, then manually deactivate iOS session
-    _audioPlayer.onPlayerComplete.listen((event) {
-      debugPrint("Audio playback complete. Now deactivating audio session.");
-      _deactivateAudioSession();
-      _startScan();
-    });
-    _configureIosAudioSession();
-  }
+    super.initState();
+    soundManager = SoundManager();
+    soundManager.initState();
 
-  Future<void> _configureIosAudioSession() async {
-    await _audioPlayer.setAudioContext(
-      AudioContext(
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.playback,
-          options: {
-            AVAudioSessionOptions.mixWithOthers,
-            AVAudioSessionOptions.duckOthers,
-          },
-        ),
-      ),
-    );
-  }
-
-  // Calls Swift code to setActive(false).
-  Future<void> _deactivateAudioSession() async {
-    try {
-      await _audioControlChannel.invokeMethod('deactivateAudioSession');
-    } catch (e) {
-      debugPrint('Error calling deactivateAudioSession: $e');
-    }
-  }  
-
-  void _startScan() async {
-    await _stopScan();
-
-    _scanSubscription = flutterBlue.scan().listen((result) {
-      final device = result.device;
-      final deviceName = device.name.trim();
-
-      // Look for the "HurriButton_Bullshit" name
-      if (deviceName == 'HurriButton_Bullshit') {
-        _playBeep();    // Duck others and play beep
-      }
-    }, onError: (error) {
-      _stopScan();
-    });
-  }
-
-  Future<void> _stopScan() async {
-    if (_scanSubscription != null) {
-      await _scanSubscription!.cancel();
-      _scanSubscription = null;
-    }
-    await flutterBlue.stopScan();
-  }
-
-  Future<void> _playBeep() async {
-    // beep.mp3 must be declared in pubspec.yaml under assets:
-    // assets/sounds/beep.mp3
-    try {
-      await _audioPlayer.play(AssetSource('sounds/2024.mp3'));
-    } catch (e) {
-      print(e);
-    }
+    bluetoothManager = BluetoothManager(soundManager);
+    bluetoothManager.startScan();
   }
 
   @override
   void dispose() {
-    _stopScan();
+    bluetoothManager.stopScan();
     super.dispose();
   }
 
@@ -118,11 +56,11 @@ class _BleAudioPageState extends State<BleAudioPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            GameButton(Colors.red),
+            GameButton(Colors.red, soundManager),
             SizedBox(height: 20),
-            GameButton(Colors.green),
+            GameButton(Colors.green, soundManager),
             SizedBox(height: 20),
-            GameButton(Colors.blue),
+            GameButton(Colors.blue, soundManager),
           ],
         ),
       ),
