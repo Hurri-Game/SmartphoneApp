@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hurrigame/bluetooth_manager.dart';
 import 'package:hurrigame/game_button.dart';
+import 'package:hurrigame/game_engine.dart';
 import 'package:hurrigame/sound_manager.dart';
 
 void main() {
@@ -22,15 +23,21 @@ class MyApp extends StatelessWidget {
 
 class BleAudioPage extends StatefulWidget {
   const BleAudioPage({super.key});
-
   @override
   State<BleAudioPage> createState() => _BleAudioPageState();
 }
 
 class _BleAudioPageState extends State<BleAudioPage> {
 
-  late SoundManager soundManager;
   late BluetoothManager bluetoothManager;
+
+  late SoundManager soundManager;
+
+  late GameEngine gameEngine;
+
+  late GameButton bullshitButton;
+  late GameButton drinkButton;
+  late GameButton challengeButton;
 
   @override
   void initState() {
@@ -38,7 +45,14 @@ class _BleAudioPageState extends State<BleAudioPage> {
     soundManager = SoundManager();
     soundManager.initState();
 
-    bluetoothManager = BluetoothManager(soundManager);
+    gameEngine = GameEngine(soundManager);
+    gameEngine.initState();
+    
+    bullshitButton = GameButton('HurriButton_Bullshit', Colors.red, gameEngine.playRandomBullshit);
+    drinkButton = GameButton('HurriButton_Drink', Colors.green, gameEngine.startDrink);
+    challengeButton = GameButton('HurriButton_Challenge', Colors.blue, gameEngine.startChallenge);
+
+    bluetoothManager = BluetoothManager([bullshitButton, drinkButton, challengeButton]);
     bluetoothManager.startScan();
   }
 
@@ -56,11 +70,11 @@ class _BleAudioPageState extends State<BleAudioPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            GameButton(Colors.red, soundManager),
+            bullshitButton,
             SizedBox(height: 20),
-            GameButton(Colors.green, soundManager),
+            drinkButton,
             SizedBox(height: 20),
-            GameButton(Colors.blue, soundManager),
+            challengeButton,
           ],
         ),
       ),

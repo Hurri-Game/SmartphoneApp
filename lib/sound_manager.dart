@@ -40,11 +40,11 @@ class SoundManager {
     );
   }
 
-  Future<void> playBullshit() async {
+  Future<void> playSound(String filename) async {
     // beep.mp3 must be declared in pubspec.yaml under assets:
     // assets/sounds/beep.mp3
     try {
-      await _audioPlayer.play(AssetSource('sounds/2024.mp3'));
+      await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
       print(e);
     }

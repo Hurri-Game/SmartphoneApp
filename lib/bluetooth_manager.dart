@@ -1,11 +1,13 @@
 import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
-import 'package:hurrigame/sound_manager.dart';
+
+import 'package:hurrigame/game_button.dart';
 
 class BluetoothManager {
-  BluetoothManager(this.soundManager);
+  BluetoothManager(this.buttons);
 
-  final SoundManager soundManager;
+  final List<GameButton> buttons;
+
   final flutterBlue = FlutterBlue.instance;
   StreamSubscription<ScanResult>? _scanSubscription;
 
@@ -17,10 +19,12 @@ class BluetoothManager {
       final device = result.device;
       final deviceName = device.name.trim();
 
-      // Look for the "HurriButton_Bullshit" name
-      if (deviceName == 'HurriButton_Bullshit') {
-        soundManager.playBullshit();
-        startScan();
+      for (var button in buttons) {
+        if (button.name == deviceName) {
+          print("Found: $deviceName");
+          button.onPressedFunction();
+          startScan();
+        }
       }
     }, onError: (error) {
       stopScan();
