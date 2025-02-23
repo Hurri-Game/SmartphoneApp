@@ -46,7 +46,6 @@ class _BleAudioPageState extends State<BleAudioPage> {
     soundManager.initState();
 
     gameEngine = GameEngine(soundManager);
-    gameEngine.initState();
     
     bullshitButton = GameButton('HurriButton_Bullshit', Colors.red, gameEngine.playRandomBullshit);
     drinkButton = GameButton('HurriButton_Drink', Colors.green, gameEngine.startDrink);

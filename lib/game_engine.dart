@@ -8,10 +8,6 @@ class GameEngine{
 
   SoundManager soundManager;
 
-  void initState() {
-    soundManager.initState();
-  }
-
   Future<void> playRandomBullshit() async {
     String? soundFile = await getRandomSoundFile(); // Warten auf das Ergebnis
     if (soundFile != null) {
