@@ -59,7 +59,144 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/sounds/bullshit/Bauer Hermann best of2.mp3
+    - assets/sounds/bullshit/dinosaur_virgins.mp3
+    - assets/sounds/bullshit/HomerBierBett.mp3
+    - assets/sounds/bullshit/peps_haben_wir_noch.mp3
+    - assets/sounds/bullshit/Tvtotal1.mp3
+    - assets/sounds/bullshit/asdf_lama.mp3
+    - assets/sounds/bullshit/snape_snape.mp3
+    - assets/sounds/bullshit/sie_wichser.mp3
+    - assets/sounds/bullshit/Gommemode.mp3
+    - assets/sounds/bullshit/peps_otto.mp3
+    - assets/sounds/bullshit/Bauer Hermann best of(1).mp3
+    - assets/sounds/bullshit/wasmachensachen-101soundboards.mp3
+    - assets/sounds/bullshit/Youre_a_Wizard_Harry.mp3
+    - assets/sounds/bullshit/no_god_no.mp3
+    - assets/sounds/bullshit/kazoo.mp3
+    - assets/sounds/bullshit/peps_unnormal.mp3
+    - assets/sounds/bullshit/kranpl_keine_lust.mp3
+    - assets/sounds/bullshit/daddychill.mp3
+    - assets/sounds/bullshit/asdf_lesen.mp3
+    - assets/sounds/bullshit/haltstop2-101soundboards.mp3
+    - assets/sounds/bullshit/My Heart Will Go On - Shittyflute (Original by Celine Dion).mp3
+    - assets/sounds/bullshit/was_labersch_du.mp3
+    - assets/sounds/bullshit/hallooooo.mp3
+    - assets/sounds/bullshit/golddublonen.mp3
+    - assets/sounds/bullshit/Butter, Käse, Eier im Penny auf der Reeperbahn.mp3
+    - assets/sounds/bullshit/asdf_ich_mag_zuge.mp3
+    - assets/sounds/bullshit/New Kids~ So ein großer Feuerball.mp3
+    - assets/sounds/bullshit/ornanieren.mp3
+    - assets/sounds/bullshit/voegeln.mp3
+    - assets/sounds/bullshit/kranpl_8_m.mp3
+    - assets/sounds/bullshit/peps_kuseng.mp3
+    - assets/sounds/bullshit/SpongeBob_Schokolade.mp3
+    - assets/sounds/bullshit/schaun_wir_mal_was_wird.mp3
+    - assets/sounds/bullshit/der_geret.mp3
+    - assets/sounds/bullshit/bobrkurwa.mp3
+    - assets/sounds/bullshit/peps_mars.mp3
+    - assets/sounds/bullshit/ruediger_capriolen.mp3
+    - assets/sounds/bullshit/zuviel_getrunken.mp3
+    - assets/sounds/bullshit/lachen.mp3
+    - assets/sounds/bullshit/Siu.mp3
+    - assets/sounds/bullshit/kazoo_fun.mp3
+    - assets/sounds/bullshit/Smash.mp3
+    - assets/sounds/bullshit/warum_liegt_hier_stroh.mp3
+    - assets/sounds/bullshit/maurice_cut.mp3
+    - assets/sounds/bullshit/asdf_kuchengeschmack.mp3
+    - assets/sounds/bullshit/uriniert-101soundboards.mp3
+    - assets/sounds/bullshit/wochenende.mp3
+    - assets/sounds/bullshit/alarm.mp3
+    - assets/sounds/bullshit/asdf_stirb_kartoffel.mp3
+    - assets/sounds/bullshit/vineboom.mp3
+    - assets/sounds/bullshit/peps_machen.mp3
+    - assets/sounds/bullshit/fuck_you_tony.mp3
+    - assets/sounds/bullshit/Mathematik.mp3
+    - assets/sounds/bullshit/plastiiiik.mp3
+    - assets/sounds/bullshit/Bre.mp3
     - assets/sounds/bullshit/2024.mp3
+    - assets/sounds/bullshit/A special song just for you.mp3
+    - assets/sounds/bullshit/savings_account.mp3
+    - assets/sounds/bullshit/dlly_parton.mp3
+    - assets/sounds/bullshit/eier.mp3
+    - assets/sounds/bullshit/ruediger_meter.mp3
+    - assets/sounds/bullshit/fakeyou_rvc_1084xprdkkw56kcgfymzeh0fgg7ceaps.mp3
+    - assets/sounds/bullshit/squidboi.mp3
+    - assets/sounds/bullshit/wieviel_hast_du_getrunken.mp3
+    - assets/sounds/bullshit/Digga.mp3
+    - assets/sounds/bullshit/Repress_it.mp3
+    - assets/sounds/bullshit/asdf_lvl_up.mp3
+    - assets/sounds/bullshit/kokosmilch.mp3
+    - assets/sounds/bullshit/lecker-101soundboards.mp3
+    - assets/sounds/bullshit/sheeeesh.mp3
+    - assets/sounds/bullshit/peps_daumen.mp3
+    - assets/sounds/bullshit/Slay.mp3
+    - assets/sounds/bullshit/Macher.mp3
+    - assets/sounds/bullshit/peps_polizei_privat.mp3
+    - assets/sounds/bullshit/Hat_Man.mp3
+    - assets/sounds/bullshit/hascht-gelernt-101soundboards.mp3
+    - assets/sounds/bullshit/dinosaur.mp3
+    - assets/sounds/bullshit/New Kids - Junge.mp3
+    - assets/sounds/bullshit/yipee.mp3
+    - assets/sounds/bullshit/stutzen_zigaretten.mp3
+    - assets/sounds/bullshit/Kapitän zur See.mp3
+    - assets/sounds/bullshit/kranpl_kran_wiegt.mp3
+    - assets/sounds/bullshit/Krustenficker_1.mp3
+    - assets/sounds/bullshit/findichnichtgut.mp3
+    - assets/sounds/bullshit/guitar-riff-159089.mp3
+    - assets/sounds/bullshit/Click…noice.mp3
+    - assets/sounds/bullshit/neindochoh-101soundboards.mp3
+    - assets/sounds/bullshit/guess_what_i_did.mp3
+    - assets/sounds/bullshit/olaf-bierpong.mp3
+    - assets/sounds/bullshit/Bodenlos.mp3
+    - assets/sounds/bullshit/ruediger_Ballen.mp3
+    - assets/sounds/bullshit/Best of Detlef stein-.mp3
+    - assets/sounds/bullshit/tagesschau.mp3
+    - assets/sounds/bullshit/Spongebob Wikinger (Olaf,Olaf....,).mp3
+    - assets/sounds/bullshit/kartoffeln_auf_die_1.mp3
+    - assets/sounds/bullshit/sauber_spielen.mp3
+    - assets/sounds/bullshit/kranpl_bandmass_halten.mp3
+    - assets/sounds/bullshit/ueeehhhh.mp3
+    - assets/sounds/bullshit/suck_my_dingeling.mp3
+    - assets/sounds/bullshit/suck_my_dingeling_2.mp3
+    - assets/sounds/bullshit/furz_1.mp3
+    - assets/sounds/bullshit/mario_2.mp3
+    - assets/sounds/bullshit/alan.mp3
+    - assets/sounds/bullshit/peps_genommen_3.mp3
+    - assets/sounds/bullshit/kiffer.mp3
+    - assets/sounds/bullshit/metalpipe.mp3
+    - assets/sounds/bullshit/imArsch.mp3
+    - assets/sounds/bullshit/Simpsons - Komm ma her!.mp3
+    - assets/sounds/bullshit/HurricaneHomer.mp3
+    - assets/sounds/bullshit/peps_genommen_2.mp3
+    - assets/sounds/bullshit/kranpl_60_tonnen.mp3
+    - assets/sounds/bullshit/mario_3.mp3
+    - assets/sounds/bullshit/inDieHosen.mp3
+    - assets/sounds/bullshit/kranpl_jungejunge.mp3
+    - assets/sounds/bullshit/kranpl_mussen_verdichtet_sein.mp3
+    - assets/sounds/bullshit/erbeerkaese-101soundboards.mp3
+    - assets/sounds/bullshit/mario_1.mp3
+    - assets/sounds/bullshit/peps_smiley.mp3
+    - assets/sounds/bullshit/Sus.mp3
+    - assets/sounds/bullshit/peps_genommen.mp3
+    - assets/sounds/bullshit/Theentertainerw-lyrics.mp3
+    - assets/sounds/bullshit/nieErlebt.mp3
+    - assets/sounds/bullshit/olaf-vollrausch.mp3
+    - assets/sounds/bullshit/kranpl_nicchtsknner.mp3
+    - assets/sounds/bullshit/olaf-ragecage.mp3
+    - assets/sounds/bullshit/woran_hat_et_jelegen.mp3
+    - assets/sounds/bullshit/Wyld.mp3
+    - assets/sounds/bullshit/zueckerli-101soundboards.mp3
+    - assets/sounds/bullshit/arschlochalarm-101soundboards.mp3
+    - assets/sounds/bullshit/double_fuck.mp3
+    - assets/sounds/bullshit/kranpl_leute_arbeit.mp3
+    - assets/sounds/bullshit/asdf_desmon.mp3
+    - assets/sounds/bullshit/gong.mp3
+    - assets/sounds/bullshit/ruediger_nicht_so_tief.mp3
+    - assets/sounds/bullshit/Ok.mp3
+    - assets/sounds/bullshit/spongebob_einszwei.mp3
+    - assets/sounds/bullshit/canigetahoyeah.mp3
+    - assets/sounds/bullshit/Tomasthetrain_FUCK_.mp3
 
   # To add assets to your application, add an assets section, like this:
   # assets:
