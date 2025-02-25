@@ -1,12 +1,12 @@
 import 'package:flutter_blue/flutter_blue.dart';
 import 'dart:async';
 
-import 'package:hurrigame/game_button.dart';
+import 'package:hurrigame/action_button.dart';
 
 class BluetoothManager {
   BluetoothManager(this.buttons);
 
-  final List<GameButton> buttons;
+  final List<ActionButton> buttons;
 
   final flutterBlue = FlutterBlue.instance;
   StreamSubscription<ScanResult>? _scanSubscription;

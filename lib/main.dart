@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hurrigame/bluetooth_manager.dart';
-import 'package:hurrigame/game_button.dart';
+import 'package:hurrigame/action_button.dart';
 import 'package:hurrigame/game_engine.dart';
 import 'package:hurrigame/sound_manager.dart';
 
@@ -35,9 +35,9 @@ class _BleAudioPageState extends State<BleAudioPage> {
 
   late GameEngine gameEngine;
 
-  late GameButton bullshitButton;
-  late GameButton drinkButton;
-  late GameButton challengeButton;
+  late ActionButton redButton;
+  late ActionButton greenButton;
+  late ActionButton blueButton;
 
   @override
   void initState() {
@@ -47,11 +47,11 @@ class _BleAudioPageState extends State<BleAudioPage> {
 
     gameEngine = GameEngine(soundManager);
     
-    bullshitButton = GameButton('HurriButton_Bullshit', Colors.red, gameEngine.playRandomBullshit);
-    drinkButton = GameButton('HurriButton_Drink', Colors.green, gameEngine.startDrink);
-    challengeButton = GameButton('HurriButton_Challenge', Colors.blue, gameEngine.startChallenge);
+    redButton = ActionButton('RedActionButton', Colors.red, gameEngine.redButtonPressed);
+    greenButton = ActionButton('GreenActionButton', Colors.green, gameEngine.greenButtonPressed);
+    blueButton = ActionButton('BlueActionButton', Colors.blue, gameEngine.blueButtonPressed);
 
-    bluetoothManager = BluetoothManager([bullshitButton, drinkButton, challengeButton]);
+    bluetoothManager = BluetoothManager([redButton, greenButton, blueButton]);
     bluetoothManager.startScan();
   }
 

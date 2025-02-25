@@ -8,7 +8,7 @@ class GameEngine{
 
   SoundManager soundManager;
 
-  Future<void> playRandomBullshit() async {
+  Future<void> redButtonPressed() async {
     String? soundFile = await getRandomSoundFile(); // Warten auf das Ergebnis
     if (soundFile != null) {
       soundManager.playSound(soundFile); // Sound abspielen
@@ -17,12 +17,12 @@ class GameEngine{
     }
   }
 
-  void startChallenge(){
-    print('Challenge started!');
+  void greenButtonPressed(){
+    print('Green Button Pressed!');
   }
 
-  void startDrink(){
-    print('Drink started!');
+  void blueButtonPressed(){
+    print('Blue Button Pressed!');
   }
 
 
