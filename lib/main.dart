@@ -64,17 +64,21 @@ class _BleAudioPageState extends State<BleAudioPage> {
       () {}, // temporary empty callback
     );
 
-    bluetoothManager = BluetoothManager([redButton, greenButton, blueButton]);
-
     ledRing = LedRing(
-      'HurriRing-BLE',
+      'HurriRing',
       '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
       'beb5483e-36e1-4688-b7f5-ea07361b26a8',
-      bluetoothManager,
     );
+
+    bluetoothManager = BluetoothManager([
+      redButton,
+      greenButton,
+      blueButton,
+    ], ledRing);
 
     gameEngine = GameEngine(soundManager, ledRing);
 
+    ledRing.setBluetoothManager(bluetoothManager);
     // Update button callbacks
     redButton.setCallback(gameEngine.redButtonPressed);
     greenButton.setCallback(gameEngine.greenButtonPressed);
@@ -102,8 +106,6 @@ class _BleAudioPageState extends State<BleAudioPage> {
             greenButton,
             SizedBox(height: 20),
             blueButton,
-            SizedBox(height: 20),
-            ledRing,
           ],
         ),
       ),
