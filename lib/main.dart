@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hurrigame/bluetooth_manager.dart';
 import 'package:hurrigame/action_button.dart';
 import 'package:hurrigame/game_engine.dart';
+import 'package:hurrigame/led_ring.dart';
 import 'package:hurrigame/sound_manager.dart';
 
 void main() {
@@ -28,7 +29,6 @@ class BleAudioPage extends StatefulWidget {
 }
 
 class _BleAudioPageState extends State<BleAudioPage> {
-
   late BluetoothManager bluetoothManager;
 
   late SoundManager soundManager;
@@ -39,19 +39,47 @@ class _BleAudioPageState extends State<BleAudioPage> {
   late ActionButton greenButton;
   late ActionButton blueButton;
 
+  late LedRing ledRing;
+
   @override
   void initState() {
     super.initState();
     soundManager = SoundManager();
     soundManager.initState();
 
-    gameEngine = GameEngine(soundManager);
-    
-    redButton = ActionButton('RedActionButton', Colors.red, gameEngine.redButtonPressed);
-    greenButton = ActionButton('GreenActionButton', Colors.green, gameEngine.greenButtonPressed);
-    blueButton = ActionButton('BlueActionButton', Colors.blue, gameEngine.blueButtonPressed);
+    // Initialize buttons first, without callbacks
+    redButton = ActionButton(
+      'HurriButton_Bullshit',
+      Colors.red,
+      () {}, // temporary empty callback
+    );
+    greenButton = ActionButton(
+      'GreenActionButton',
+      Colors.green,
+      () {}, // temporary empty callback
+    );
+    blueButton = ActionButton(
+      'BlueActionButton',
+      Colors.blue,
+      () {}, // temporary empty callback
+    );
 
     bluetoothManager = BluetoothManager([redButton, greenButton, blueButton]);
+
+    ledRing = LedRing(
+      'HurriRing-BLE',
+      '4fafc201-1fb5-459e-8fcc-c5c9c331914b',
+      'beb5483e-36e1-4688-b7f5-ea07361b26a8',
+      bluetoothManager,
+    );
+
+    gameEngine = GameEngine(soundManager, ledRing);
+
+    // Update button callbacks
+    redButton.setCallback(gameEngine.redButtonPressed);
+    greenButton.setCallback(gameEngine.greenButtonPressed);
+    blueButton.setCallback(gameEngine.blueButtonPressed);
+
     bluetoothManager.startScan();
   }
 
@@ -69,11 +97,13 @@ class _BleAudioPageState extends State<BleAudioPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            bullshitButton,
+            redButton,
             SizedBox(height: 20),
-            drinkButton,
+            greenButton,
             SizedBox(height: 20),
-            challengeButton,
+            blueButton,
+            SizedBox(height: 20),
+            ledRing,
           ],
         ),
       ),
