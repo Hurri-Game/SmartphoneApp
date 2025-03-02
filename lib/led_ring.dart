@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:hurrigame/bluetooth_manager.dart';
 
 class LedRing extends StatelessWidget {
-  const LedRing(
-    this.name,
-    this.serviceUUID,
-    this.characteristicsUUID,
-    this.bluetoothManager, {
-    Key? key,
-  }) : super(key: key);
+  LedRing(this.name, this.serviceUUID, this.characteristicsUUID, {Key? key})
+    : super(key: key);
 
   final String name;
   final String serviceUUID;
   final String characteristicsUUID;
-  final BluetoothManager bluetoothManager;
   final statusColor = Colors.white;
+
+  // Make bluetoothManager late final instead of final
+  late final BluetoothManager bluetoothManager;
+
+  void setBluetoothManager(BluetoothManager manager) {
+    bluetoothManager = manager;
+  }
 
   void setColor(Color color) {
     final rgbString = '${color.red},${color.green},${color.blue}';
@@ -39,7 +40,6 @@ class LedRing extends StatelessWidget {
       ),
       onPressed: () {
         print("Pressed Ring!");
-        setColor(Colors.white);
       },
       child: const Text('', style: TextStyle(fontWeight: FontWeight.bold)),
     );

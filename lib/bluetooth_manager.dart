@@ -3,11 +3,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:hurrigame/action_button.dart';
+import 'package:hurrigame/led_ring.dart';
 
 class BluetoothManager {
-  BluetoothManager(this.buttons);
+  BluetoothManager(this.buttons, this.ledRing);
+
   final List<ActionButton> buttons;
+  final LedRing ledRing;
   final flutterBlue = FlutterBlue.instance;
+
+  // Remove these since they come from ledRing now
+  String get targetDeviceName => ledRing.name;
+  Guid get serviceGuid => Guid(ledRing.serviceUUID);
+  Guid get characteristicGuid => Guid(ledRing.characteristicsUUID);
 
   StreamSubscription<ScanResult>? _scanSubscription;
   BluetoothDevice? connectedDevice;
@@ -74,7 +82,6 @@ class BluetoothManager {
             // 2) Check if device is the one you want to connect to
             //    e.g. maybe you have a property `targetDeviceName`.
             //    Or you pass it in from outside. This is just an example:
-            const String targetDeviceName = "HurriRing";
             if (deviceName == targetDeviceName) {
               print("Found target device: $deviceName");
               _connectToDevice(device);
@@ -124,12 +131,6 @@ class BluetoothManager {
       print("Discovering services...");
       final services = await device.discoverServices();
       print("Services discovered.");
-
-      // Example service/characteristic
-      final Guid serviceGuid = Guid("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
-      final Guid characteristicGuid = Guid(
-        "beb5483e-36e1-4688-b7f5-ea07361b26a8",
-      );
 
       for (BluetoothService s in services) {
         if (s.uuid == serviceGuid) {
