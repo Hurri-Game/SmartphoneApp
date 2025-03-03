@@ -11,6 +11,15 @@ class GameEngine {
   SoundManager soundManager;
 
   LedRing ledRing;
+  //ledRing.setColor(Colors.green);
+  //ledRing.setIdle();
+  //ledRing.setRainbow();
+  //ledRing.setRainbowWipe();
+  //ledRing.pulse(Colors.green);
+  //ledRing.roulette(Colors.red);
+  //ledRing.randomNumber(Colors.green, 10);
+  //ledRing.shuffleSection(Colors.green);
+  //ledRing.setSection(Colors.green, RingSection.right);
 
   Future<void> redButtonPressed() async {
     print('Red Button Pressed!');
@@ -31,6 +40,7 @@ class GameEngine {
   void blueButtonPressed() {
     print('Blue Button Pressed!');
     ledRing.setColor(Colors.blue);
+    ledRing.freeze();
   }
 
   Future<String?> getRandomSoundFile() async {
