@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hurrigame/bluetooth_manager.dart';
+//import 'package:hurrigame/bluetooth_manager.dart';
 
 enum RingSection {
   left(0),
@@ -14,8 +14,7 @@ enum RingSection {
 }
 
 class LedRing extends StatelessWidget {
-  LedRing(this.name, this.serviceUUID, this.characteristicsUUID, {Key? key})
-    : super(key: key);
+  LedRing(this.name, this.serviceUUID, this.characteristicsUUID, {super.key});
 
   final String name;
   final String serviceUUID;
@@ -23,11 +22,14 @@ class LedRing extends StatelessWidget {
   final statusColor = Colors.white;
   bool _isConnected = false;
 
-  late final BluetoothManager bluetoothManager;
 
-  void setBluetoothManager(BluetoothManager manager) {
-    bluetoothManager = manager;
-  }
+  // remove all bluetoothManager references for now 
+
+  //late final BluetoothManager bluetoothManager;
+
+  // void setBluetoothManager(BluetoothManager manager) {
+  //   bluetoothManager = manager;
+  // }
 
   void setConnected(bool connected) {
     _isConnected = connected;
@@ -42,9 +44,9 @@ class LedRing extends StatelessWidget {
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
     print(rgbString);
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"STATIC\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
-    );
+    // bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"STATIC","parameter":[{"color":"${rgbString}"}]}',
+    // );
   }
 
   void setIdle() {
@@ -52,7 +54,7 @@ class LedRing extends StatelessWidget {
       print('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic('{\"state\":\"IDLE\"}');
+    //bluetoothManager.writeStringToCharacteristic('{"state":"IDLE"}');
   }
 
   void setRainbow() {
@@ -60,7 +62,7 @@ class LedRing extends StatelessWidget {
       print('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic('{\"state\":\"RAINBOW\"}');
+    //bluetoothManager.writeStringToCharacteristic('{"state":"RAINBOW"}');
   }
 
   void setRainbowWipe() {
@@ -68,9 +70,9 @@ class LedRing extends StatelessWidget {
       print('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"RAINBOW_WIPE\"}',
-    );
+    //bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"RAINBOW_WIPE"}',
+    // );
   }
 
   void freeze() {
@@ -78,7 +80,7 @@ class LedRing extends StatelessWidget {
       print('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic('{\"state\":\"FREEZE\"}');
+    //bluetoothManager.writeStringToCharacteristic('{"state":"FREEZE"}');
   }
 
   void pulse(Color color) {
@@ -88,9 +90,9 @@ class LedRing extends StatelessWidget {
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
     print(rgbString);
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"PULSE\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
-    );
+    // bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"PULSE","parameter":[{"color":"${rgbString}"}]}',
+    // );
   }
 
   void roulette(Color color) {
@@ -99,9 +101,9 @@ class LedRing extends StatelessWidget {
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"ROULETTE\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
-    );
+    // bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"ROULETTE","parameter":[{"color":"${rgbString}"}]}',
+    // );
   }
 
   void randomNumber(Color color, int numberOfLeds) {
@@ -110,9 +112,9 @@ class LedRing extends StatelessWidget {
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"RANDOM_NUMBER\",\"parameter\":[{\"color\":\"$rgbString\"},{\"number\":\"$numberOfLeds\"}]}',
-    );
+    // bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"RANDOM_NUMBER","parameter":[{"color":"${rgbString}"},{"number":"${numberOfLeds}"}]}',
+    // );
   }
 
   void shuffleSection(Color color) {
@@ -121,9 +123,9 @@ class LedRing extends StatelessWidget {
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"SHUFFLE_SECTIONS\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
-    );
+    // bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"SHUFFLE_SECTIONS","parameter":[{"color":"${rgbString}"}]}',
+    // );
   }
 
   void setSection(Color color, RingSection section) {
@@ -134,9 +136,9 @@ class LedRing extends StatelessWidget {
     final rgbString = '${color.red},${color.green},${color.blue}';
     final sectionValue = section.value;
     print(section.value);
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"SHOW_SECTION\",\"parameter\":[{\"color\":\"$rgbString\"},{\"number\":\"$sectionValue\"}]}',
-    );
+    // bluetoothManager.writeStringToCharacteristic(
+    //   '{"state":"SHOW_SECTION","parameter":[{"color":"${rgbString}"},{"number":"${sectionValue}"}]}',
+    // );
   }
 
   @override

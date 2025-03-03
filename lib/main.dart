@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hurrigame/bluetooth_manager.dart';
+//import 'package:hurrigame/bluetooth_manager.dart';
 import 'package:hurrigame/action_button.dart';
 import 'package:hurrigame/game_engine.dart';
 import 'package:hurrigame/led_ring.dart';
@@ -29,7 +29,8 @@ class BleAudioPage extends StatefulWidget {
 }
 
 class _BleAudioPageState extends State<BleAudioPage> {
-  late BluetoothManager bluetoothManager;
+  // remove for testing
+  //late BluetoothManager bluetoothManager;
 
   late SoundManager soundManager;
 
@@ -70,25 +71,26 @@ class _BleAudioPageState extends State<BleAudioPage> {
       'beb5483e-36e1-4688-b7f5-ea07361b26a8',
     );
 
-    bluetoothManager = BluetoothManager([
-      redButton,
-      greenButton,
-      blueButton,
-    ], ledRing);
+    // bluetoothManager = BluetoothManager([
+    //   redButton,
+    //   greenButton,
+    //   blueButton,
+    // ], ledRing);
+
 
     gameEngine = GameEngine(soundManager, ledRing);
 
-    ledRing.setBluetoothManager(bluetoothManager);
+    //ledRing.setBluetoothManager(bluetoothManager);
     redButton.setCallback(gameEngine.redButtonPressed);
     greenButton.setCallback(gameEngine.greenButtonPressed);
     blueButton.setCallback(gameEngine.blueButtonPressed);
 
-    bluetoothManager.startScan();
+    //bluetoothManager.startScan();
   }
 
   @override
   void dispose() {
-    bluetoothManager.stopScan();
+    //bluetoothManager.stopScan();
     super.dispose();
   }
 

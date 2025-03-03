@@ -1,175 +1,178 @@
-import 'package:flutter_blue/flutter_blue.dart';
-import 'dart:async';
-import 'dart:convert';
+// //import 'package:flutter_blue/flutter_blue.dart';
+// //import 'package:flutter_blue/flutter_blue.dart';
 
-import 'package:hurrigame/action_button.dart';
-import 'package:hurrigame/led_ring.dart';
+// import 'dart:async';
+// import 'dart:convert';
 
-class BluetoothManager {
-  BluetoothManager(this.buttons, this.ledRing);
+// import 'package:hurrigame/action_button.dart';
+// import 'package:hurrigame/led_ring.dart';
 
-  final List<ActionButton> buttons;
-  final LedRing ledRing;
-  final flutterBlue = FlutterBlue.instance;
+// class BluetoothManager {
+//   BluetoothManager(this.buttons, this.ledRing);
 
-  // Remove these since they come from ledRing now
-  String get targetDeviceName => ledRing.name;
-  Guid get serviceGuid => Guid(ledRing.serviceUUID);
-  Guid get characteristicGuid => Guid(ledRing.characteristicsUUID);
+//   final List<ActionButton> buttons;
+//   final LedRing ledRing;
+//   final flutterBlue = FlutterBlue.instance;
 
-  StreamSubscription<ScanResult>? _scanSubscription;
-  BluetoothDevice? connectedDevice;
-  BluetoothCharacteristic? targetCharacteristic;
+//   // Remove these since they come from ledRing now
+//   String get targetDeviceName => ledRing.name;
+//   Guid get serviceGuid => Guid(ledRing.serviceUUID);
+//   Guid get characteristicGuid => Guid(ledRing.characteristicsUUID);
 
-  // Add map to track last detection time for each button
-  final Map<String, DateTime> _lastDetectionTimes = {};
-  static const _cooldownDuration = Duration(seconds: 1);
+//   StreamSubscription<ScanResult>? _scanSubscription;
+//   BluetoothDevice? connectedDevice;
+//   BluetoothCharacteristic? targetCharacteristic;
 
-  /// Call this once, and it will keep scanning (and listening) indefinitely
-  void startScan() async {
-    // Prevent double-scanning
-    if (_scanSubscription != null) {
-      print("Already scanning...");
-      return;
-    }
+//   // Add map to track last detection time for each button
+//   final Map<String, DateTime> _lastDetectionTimes = {};
+//   static const _cooldownDuration = Duration(seconds: 1);
 
-    // First, ensure Bluetooth is on
-    if (await flutterBlue.isAvailable == false) {
-      print("Bluetooth is not available on this device");
-      return;
-    }
+//   /// Call this once, and it will keep scanning (and listening) indefinitely
+//   void startScan() async {
+//     // Prevent double-scanning
+//     if (_scanSubscription != null) {
+//       print("Already scanning...");
+//       return;
+//     }
 
-    if (await flutterBlue.isOn == false) {
-      print("Bluetooth is turned off");
-      return;
-    }
+//     // First, ensure Bluetooth is on
+//     if (await flutterBlue.isAvailable == false) {
+//       print("Bluetooth is not available on this device");
+//       return;
+//     }
 
-    //print(">>> Starting Scan...");
-    _scanSubscription = flutterBlue
-        .scan(
-          // Add scan settings for better detection
-          timeout: const Duration(seconds: 4),
-          allowDuplicates: true,
-          scanMode: ScanMode.lowLatency,
-        )
-        .listen(
-          (result) {
-            final device = result.device;
-            final deviceName = device.name.trim();
-            // Add RSSI logging to help debug detection issues
+//     if (await flutterBlue.isOn == false) {
+//       print("Bluetooth is turned off");
+//       return;
+//     }
 
-            //print(
-            //  "Found device: $deviceName | ${result.device.id} | RSSI: ${result.rssi}",
-            //);
+//     //print(">>> Starting Scan...");
+//     _scanSubscription = flutterBlue
+//         .scan(
+//           // Add scan settings for better detection
+//           timeout: const Duration(seconds: 4),
+//           allowDuplicates: true,
+//           scanMode: ScanMode.lowLatency,
+//         )
+//         .listen(
+//           (result) {
+//             final device = result.device;
+//             final deviceName = device.name.trim();
+//             // Add RSSI logging to help debug detection issues
 
-            // 1) Check if device is a "beacon" for any of your ActionButtons
-            for (var button in buttons) {
-              if (button.name == deviceName) {
-                // Check cooldown period
-                final lastDetection = _lastDetectionTimes[deviceName];
-                final now = DateTime.now();
-                if (lastDetection == null ||
-                    now.difference(lastDetection) > _cooldownDuration) {
-                  button.onPressedFunction();
-                  _lastDetectionTimes[deviceName] = now;
-                }
-              }
-            }
+//             //print(
+//             //  "Found device: $deviceName | ${result.device.id} | RSSI: ${result.rssi}",
+//             //);
 
-            // 2) Check if device is the one you want to connect to
-            //    e.g. maybe you have a property `targetDeviceName`.
-            //    Or you pass it in from outside. This is just an example:
-            if (deviceName == targetDeviceName) {
-              print("Found target device: $deviceName");
-              _connectToDevice(device);
-            }
-          },
-          onError: (error) {
-            print("Scan error: $error");
-            stopScan();
-            // Restart scan after error with delay
-            Future.delayed(const Duration(seconds: 2), () {
-              startScan();
-            });
-          },
-        );
+//             // 1) Check if device is a "beacon" for any of your ActionButtons
+//             for (var button in buttons) {
+//               if (button.name == deviceName) {
+//                 // Check cooldown period
+//                 final lastDetection = _lastDetectionTimes[deviceName];
+//                 final now = DateTime.now();
+//                 if (lastDetection == null ||
+//                     now.difference(lastDetection) > _cooldownDuration) {
+//                   button.onPressedFunction();
+//                   _lastDetectionTimes[deviceName] = now;
+//                 }
+//               }
+//             }
 
-    // Restart scan periodically to prevent Android scan throttling
-    Future.delayed(const Duration(seconds: 1), () async {
-      await stopScan();
-      startScan();
-    });
-  }
+//             // 2) Check if device is the one you want to connect to
+//             //    e.g. maybe you have a property `targetDeviceName`.
+//             //    Or you pass it in from outside. This is just an example:
+//             if (deviceName == targetDeviceName) {
+//               print("Found target device: $deviceName");
+//               _connectToDevice(device);
+//             }
+//           },
+//           onError: (error) {
+//             print("Scan error: $error");
+//             stopScan();
+//             // Restart scan after error with delay
+//             Future.delayed(const Duration(seconds: 2), () {
+//               startScan();
+//             });
+//           },
+//         );
 
-  Future<void> stopScan() async {
-    //print(">>> Stopping Scan...");
-    if (_scanSubscription != null) {
-      await _scanSubscription!.cancel();
-      _scanSubscription = null;
-    }
-    await flutterBlue.stopScan();
-  }
+//     // Restart scan periodically to prevent Android scan throttling
+//     Future.delayed(const Duration(seconds: 1), () async {
+//       await stopScan();
+//       startScan();
+//     });
+//   }
 
-  Future<void> _connectToDevice(BluetoothDevice device) async {
-    if (ledRing.isConnected) {
-      print("Already connected");
-      return;
-    }
+//   Future<void> stopScan() async {
+//     //print(">>> Stopping Scan...");
+//     if (_scanSubscription != null) {
+//       await _scanSubscription!.cancel();
+//       _scanSubscription = null;
+//     }
+//     await flutterBlue.stopScan();
+//   }
 
-    try {
-      print("Connecting to ${device.name}...");
-      await device.connect();
-      print("Connected to ${device.name}");
+//   Future<void> _connectToDevice(BluetoothDevice device) async {
+//     if (ledRing.isConnected) {
+//       print("Already connected");
+//       return;
+//     }
 
-      connectedDevice = device;
-      ledRing.setConnected(true);
+//     try {
+//       print("Connecting to ${device.name}...");
+//       await device.connect();
+//       print("Connected to ${device.name}");
 
-      print("Discovering services...");
-      final services = await device.discoverServices();
-      print("Services discovered.");
+//       connectedDevice = device;
+//       ledRing.setConnected(true);
 
-      for (BluetoothService s in services) {
-        if (s.uuid == serviceGuid) {
-          print("Found target service: $serviceGuid");
-          for (BluetoothCharacteristic c in s.characteristics) {
-            if (c.uuid == characteristicGuid) {
-              targetCharacteristic = c;
-              print("Found target characteristic: $characteristicGuid");
-              // If you want, you can now read, write, or setNotify on c.
-              // You can keep scanning in the background or stop scanning,
-              // depending on your needs.
-              return;
-            }
-          }
-        }
-      }
-      print("Target service/characteristic not found on ${device.name}.");
-    } catch (e) {
-      print("Error while connecting: $e");
-      connectedDevice?.disconnect();
-      connectedDevice = null;
-      ledRing.setConnected(false);
-    }
-  }
+//       print("Discovering services...");
+//       final services = await device.discoverServices();
+//       print("Services discovered.");
 
-  /// Example write method
-  Future<void> writeStringToCharacteristic(String data) async {
-    if (targetCharacteristic == null || !ledRing.isConnected) {
-      print('Not connected or characteristic not found');
-      connectedDevice = null;
-      ledRing.setConnected(false);
-      return;
-    }
+//       for (BluetoothService s in services) {
+//         if (s.uuid == serviceGuid) {
+//           print("Found target service: $serviceGuid");
+//           for (BluetoothCharacteristic c in s.characteristics) {
+//             if (c.uuid == characteristicGuid) {
+//               targetCharacteristic = c;
+//               print("Found target characteristic: $characteristicGuid");
+//               // If you want, you can now read, write, or setNotify on c.
+//               // You can keep scanning in the background or stop scanning,
+//               // depending on your needs.
+//               return;
+//             }
+//           }
+//         }
+//       }
+//       print("Target service/characteristic not found on ${device.name}.");
+//     } catch (e) {
+//       print("Error while connecting: $e");
+//       connectedDevice?.disconnect();
+//       connectedDevice = null;
+//       ledRing.setConnected(false);
+//     }
+//   }
 
-    try {
-      final bytes = utf8.encode(data);
-      await targetCharacteristic!.write(bytes, withoutResponse: false);
-      print('Wrote: $data');
-    } catch (e) {
-      print('Error writing: $e');
-      connectedDevice?.disconnect();
-      connectedDevice = null;
-      ledRing.setConnected(false);
-    }
-  }
-}
+//   /// Example write method
+//   Future<void> writeStringToCharacteristic(String data) async {
+//     if (targetCharacteristic == null || !ledRing.isConnected) {
+//       print('Not connected or characteristic not found');
+//       connectedDevice = null;
+//       ledRing.setConnected(false);
+//       return;
+//     }
+
+//     try {
+//       final bytes = utf8.encode(data);
+//       await targetCharacteristic!.write(bytes, withoutResponse: false);
+//       print('Wrote: $data');
+//     } catch (e) {
+//       print('Error writing: $e');
+//       connectedDevice?.disconnect();
+//       connectedDevice = null;
+//       ledRing.setConnected(false);
+//     }
+//   }
+// }
+
