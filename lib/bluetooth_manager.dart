@@ -21,9 +21,6 @@ class BluetoothManager {
   BluetoothDevice? connectedDevice;
   BluetoothCharacteristic? targetCharacteristic;
 
-  /// Add this field
-  bool _isConnecting = false;
-
   // Add map to track last detection time for each button
   final Map<String, DateTime> _lastDetectionTimes = {};
   static const _cooldownDuration = Duration(seconds: 1);
@@ -114,19 +111,18 @@ class BluetoothManager {
   }
 
   Future<void> _connectToDevice(BluetoothDevice device) async {
-    // Prevent multiple connection attempts
-    if (_isConnecting || connectedDevice != null) {
-      print("Already connected or connecting...");
+    if (ledRing.isConnected) {
+      print("Already connected");
       return;
     }
 
-    _isConnecting = true;
     try {
       print("Connecting to ${device.name}...");
       await device.connect();
       print("Connected to ${device.name}");
 
       connectedDevice = device;
+      ledRing.setConnected(true);
 
       print("Discovering services...");
       final services = await device.discoverServices();
@@ -152,16 +148,16 @@ class BluetoothManager {
       print("Error while connecting: $e");
       connectedDevice?.disconnect();
       connectedDevice = null;
-    } finally {
-      _isConnecting = false;
+      ledRing.setConnected(false);
     }
   }
 
   /// Example write method
   Future<void> writeStringToCharacteristic(String data) async {
-    if (targetCharacteristic == null) {
-      print('Characteristic not found or not set.');
+    if (targetCharacteristic == null || !ledRing.isConnected) {
+      print('Not connected or characteristic not found');
       connectedDevice = null;
+      ledRing.setConnected(false);
       return;
     }
 
@@ -173,6 +169,7 @@ class BluetoothManager {
       print('Error writing: $e');
       connectedDevice?.disconnect();
       connectedDevice = null;
+      ledRing.setConnected(false);
     }
   }
 }

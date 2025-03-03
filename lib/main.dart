@@ -79,7 +79,6 @@ class _BleAudioPageState extends State<BleAudioPage> {
     gameEngine = GameEngine(soundManager, ledRing);
 
     ledRing.setBluetoothManager(bluetoothManager);
-    // Update button callbacks
     redButton.setCallback(gameEngine.redButtonPressed);
     greenButton.setCallback(gameEngine.greenButtonPressed);
     blueButton.setCallback(gameEngine.blueButtonPressed);

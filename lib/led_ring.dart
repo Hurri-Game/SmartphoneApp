@@ -9,15 +9,25 @@ class LedRing extends StatelessWidget {
   final String serviceUUID;
   final String characteristicsUUID;
   final statusColor = Colors.white;
+  bool _isConnected = false;
 
-  // Make bluetoothManager late final instead of final
   late final BluetoothManager bluetoothManager;
 
   void setBluetoothManager(BluetoothManager manager) {
     bluetoothManager = manager;
   }
 
+  void setConnected(bool connected) {
+    _isConnected = connected;
+  }
+
+  bool get isConnected => _isConnected;
+
   void setColor(Color color) {
+    if (!_isConnected) {
+      print('Not connected to LED ring');
+      return;
+    }
     final rgbString = '${color.red},${color.green},${color.blue}';
     print(rgbString);
     bluetoothManager.writeStringToCharacteristic(
