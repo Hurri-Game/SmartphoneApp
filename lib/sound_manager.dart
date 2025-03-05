@@ -52,29 +52,9 @@ class SoundManager {
     // beep.mp3 must be declared in pubspec.yaml under assets:
     // assets/sounds/beep.mp3
     try {
-      await fadeOutBackgroundMusic();
       await _audioPlayer.play(AssetSource(filename));
-      await fadeInBackgroundMusic();
     } catch (e) {
       print(e);
-    }
-  }
-
-  Future<void> fadeOutBackgroundMusic() async {
-    const int steps = 10;
-    const Duration stepDuration = Duration(milliseconds: 100);
-    for (int i = 0; i < steps; i++) {
-      await _audioPlayer.setVolume(1.0 - (i + 1) / steps);
-      await Future.delayed(stepDuration);
-    }
-  }
-
-  Future<void> fadeInBackgroundMusic() async {
-    const int steps = 10;
-    const Duration stepDuration = Duration(milliseconds: 100);
-    for (int i = 0; i < steps; i++) {
-      await _audioPlayer.setVolume((i + 1) / steps);
-      await Future.delayed(stepDuration);
     }
   }
 }
