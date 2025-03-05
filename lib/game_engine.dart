@@ -23,7 +23,7 @@ class GameEngine {
 
   Future<void> redButtonPressed() async {
     print('Red Button Pressed!');
-    ledRing.setColor(Colors.red);
+    ledRing.setRainbow();
     String? soundFile = await getRandomSoundFile(); // Warten auf das Ergebnis
     if (soundFile != null) {
       soundManager.playSound(soundFile); // Sound abspielen
@@ -34,13 +34,17 @@ class GameEngine {
 
   void greenButtonPressed() {
     print('Green Button Pressed!');
-    ledRing.setColor(Colors.green);
+    ledRing.roulette(Colors.orange);
   }
 
   void blueButtonPressed() {
     print('Blue Button Pressed!');
     ledRing.setColor(Colors.blue);
     ledRing.freeze();
+  }
+
+  void soundPlayed() {
+    ledRing.setColor(Colors.black);
   }
 
   Future<String?> getRandomSoundFile() async {

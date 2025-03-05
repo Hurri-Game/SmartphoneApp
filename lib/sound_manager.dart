@@ -3,7 +3,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 
 class SoundManager {
-  SoundManager();
+  SoundManager(this.onSoundPlayed);
+  late VoidCallback onSoundPlayed;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
   static const _audioControlChannel = MethodChannel(
@@ -13,9 +14,14 @@ class SoundManager {
   void initState() {
     _audioPlayer.onPlayerComplete.listen((event) {
       debugPrint("Audio playback complete. Now deactivating audio session.");
+      onSoundPlayed();
       _deactivateAudioSession();
     });
     _configureAudioSession();
+  }
+
+  void setCallback(VoidCallback callback) {
+    onSoundPlayed = callback;
   }
 
   // Calls Swift code to setActive(false).
