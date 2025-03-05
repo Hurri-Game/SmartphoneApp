@@ -4,9 +4,16 @@ import 'package:hurrigame/action_button.dart';
 import 'package:hurrigame/game_engine.dart';
 import 'package:hurrigame/led_ring.dart';
 import 'package:hurrigame/sound_manager.dart';
+import 'package:flutter/services.dart';
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -44,7 +51,7 @@ class _BleAudioPageState extends State<BleAudioPage> {
   @override
   void initState() {
     super.initState();
-    soundManager = SoundManager();
+    soundManager = SoundManager(() {});
     soundManager.initState();
 
     // Initialize buttons first, without callbacks
@@ -79,6 +86,7 @@ class _BleAudioPageState extends State<BleAudioPage> {
     gameEngine = GameEngine(soundManager, ledRing);
 
     ledRing.setBluetoothManager(bluetoothManager);
+    soundManager.setCallback(gameEngine.soundPlayed);
     redButton.setCallback(gameEngine.redButtonPressed);
     greenButton.setCallback(gameEngine.greenButtonPressed);
     blueButton.setCallback(gameEngine.blueButtonPressed);
