@@ -26,14 +26,14 @@ class BluetoothManager {
   static const _cooldownDuration = Duration(seconds: 1);
 
   /// Call this once, and it will keep scanning (and listening) indefinitely
-  void startScan() async {
+  void startScan() {
     if (_scanSubscription != null) {
       print("Already scanning...");
       return;
     }
 
     // Updated availability check
-    if (await FlutterBluePlus.isSupported == false) {
+    if (FlutterBluePlus.isSupported == false) {
       print("Bluetooth is not available on this device");
       return;
     }
@@ -46,7 +46,7 @@ class BluetoothManager {
     print("Starting scan...");
     // setup supscription
     _scanSubscription = FlutterBluePlus.scanResults.listen(
-      (result) async {
+      (result) {
         if (result.isNotEmpty) {
           final device = result.last.device;
           final deviceName = device.platformName.trim();
@@ -68,8 +68,8 @@ class BluetoothManager {
           // LED-Ring
           if (deviceName == targetDeviceName && !_connecting) {
             _connecting = true;
-            await stopScan(); // Stop scanning before connecting
-            await _connectToDevice(device); // Wait for connection to complete
+            stopScan(); // Stop scanning before connecting
+            _connectToDevice(device); // Wait for connection to complete
           }
         }
       },
@@ -86,7 +86,6 @@ class BluetoothManager {
 
     if (!_connecting) {
       // start scanning
-      print("Really start scanning");
       FlutterBluePlus.startScan();
 
       // Restart scan periodically to prevent Android scan throttling
