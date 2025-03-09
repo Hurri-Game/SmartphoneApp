@@ -21,6 +21,10 @@ class GameEngine {
   //ledRing.shuffleSection(Colors.green);
   //ledRing.setSection(Colors.green, RingSection.right);
 
+  void buttonPressed(String name) {
+    print('$name pressed');
+  }
+
   Future<void> redButtonPressed() async {
     print('Red Button Pressed!');
     ledRing.setRainbow();

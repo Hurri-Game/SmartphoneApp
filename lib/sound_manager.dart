@@ -20,8 +20,8 @@ class SoundManager {
     _configureAudioSession();
   }
 
-  void setCallback(VoidCallback callback) {
-    onSoundPlayed = callback;
+  void setFinishSoundPlaybackFunc(VoidCallback finishSoundPlaybackFunc) {
+    onSoundPlayed = finishSoundPlaybackFunc;
   }
 
   // Calls Swift code to setActive(false).
