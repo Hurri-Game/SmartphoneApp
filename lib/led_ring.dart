@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hurrigame/bluetooth_manager.dart';
+import 'package:hurrigame/button_screen.dart';
 
 enum RingSection {
   left(0),
@@ -31,6 +32,8 @@ class LedRing extends StatelessWidget {
 
   void setConnected(bool connected) {
     _isConnected = connected;
+    print('LED-Ring Connected: $_isConnected');
+    connectionKey.currentState?.setConnectedIndicator(_isConnected);
   }
 
   bool get isConnected => _isConnected;

@@ -1,7 +1,7 @@
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:hurrigame/action_button.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:hurrigame/action_button.dart';
 import 'package:hurrigame/led_ring.dart';
 
 class BluetoothManager {
@@ -59,7 +59,7 @@ class BluetoothManager {
               final now = DateTime.now();
               if (lastDetection == null ||
                   now.difference(lastDetection) > _cooldownDuration) {
-                button.onPressedFunction();
+                button.onTap();
                 _lastDetectionTimes[deviceName] = now;
               }
             }
