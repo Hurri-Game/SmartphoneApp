@@ -12,7 +12,12 @@ abstract class Game {
   void redButtonPressed();
   void blueButtonPressed();
   void play();
-  void stop();
+  
+  void stop() {
+    soundManager.stopSound();
+    ledRing?.setIdle();
+    stopCallback();
+  }
 }
 
 class Flunkyball extends Game {
@@ -52,8 +57,7 @@ class Flunkyball extends Game {
 
   @override
   void stop() {
-    soundManager.stopSound();
-    stopCallback();
+    super.stop();
     print('Flunkyball stopped!');
   }
 }
