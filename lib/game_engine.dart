@@ -45,7 +45,9 @@ class GameEngine {
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {
-          soundManager.playSound(soundFile); // Sound abspielen
+          await soundManager.playSound(soundFile); // Sound abspielen
+          await soundManager.waitForSoundToFinish();
+          ledRing.setIdle();
         } else {
           print("Kein Sound gefunden.");
         }
@@ -58,7 +60,6 @@ class GameEngine {
   }
 
   void greenButtonPressed() {
-
     switch (currentEngineState) {
       case EngineState.idle:
         playRandomGame();
@@ -81,10 +82,6 @@ class GameEngine {
         break;
     }
     print('Blue Button Pressed!');
-  }
-
-  void soundPlayed() {
-    ledRing.setColor(Colors.black);
   }
 
   Future<String?> getRandomSoundFile() async {

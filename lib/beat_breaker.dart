@@ -26,7 +26,7 @@ class _BeatBreakerState extends State<BeatBreaker> {
   @override
   void initState() {
     super.initState();
-    soundManager = SoundManager(() {});
+    soundManager = SoundManager();
     soundManager.initState();
 
     // Initialize buttons first, without callbacks
@@ -41,7 +41,6 @@ class _BeatBreakerState extends State<BeatBreaker> {
     gameEngine = GameEngine(soundManager, ledRing);
 
     ledRing.setBluetoothManager(bluetoothManager);
-    soundManager.setFinishSoundPlaybackFunc(gameEngine.soundPlayed);
     buttons[0].setOnTapFunc(gameEngine.redButtonPressed);
     buttons[1].setOnTapFunc(gameEngine.greenButtonPressed);
     buttons[2].setOnTapFunc(gameEngine.blueButtonPressed);
