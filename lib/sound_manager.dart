@@ -3,8 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 
 class SoundManager {
-  SoundManager(this.onSoundPlayed);
-  late VoidCallback onSoundPlayed;
+  SoundManager();
 
   final AudioPlayer _audioPlayer = AudioPlayer();
   static const _audioControlChannel = MethodChannel(
@@ -14,14 +13,9 @@ class SoundManager {
   void initState() {
     _audioPlayer.onPlayerComplete.listen((event) {
       debugPrint("Audio playback complete. Now deactivating audio session.");
-      onSoundPlayed();
       _deactivateAudioSession();
     });
     _configureAudioSession();
-  }
-
-  void setFinishSoundPlaybackFunc(VoidCallback finishSoundPlaybackFunc) {
-    onSoundPlayed = finishSoundPlaybackFunc;
   }
 
   // Calls Swift code to setActive(false).
@@ -59,6 +53,41 @@ class SoundManager {
     // assets/sounds/beep.mp3
     try {
       await _audioPlayer.play(AssetSource(filename));
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> stopSound() async {
+    try {
+      await _audioPlayer.stop();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  bool isPlaying() {
+    return _audioPlayer.state == PlayerState.playing;
+  }
+
+  Future<void> waitForSoundToFinish() async {
+    while (isPlaying()) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
+  Future<void> loopSound(String filename) async {
+    try {
+      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.play(AssetSource(filename));
+    } catch (e) {
+      print(e);
+    }
+  }
+  Future<void> stopLoop() async {
+    try {
+      await _audioPlayer.setReleaseMode(ReleaseMode.release);
+      await _audioPlayer.stop();
     } catch (e) {
       print(e);
     }

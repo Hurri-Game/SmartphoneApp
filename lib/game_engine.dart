@@ -4,11 +4,24 @@ import 'package:hurrigame/sound_manager.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:hurrigame/games.dart';
+
+enum EngineState { idle, gameRunning }
+
+enum Games {
+  flunkyball,
+  rageCage,
+  // beerPong,
+}
 
 class GameEngine {
   GameEngine(this.soundManager, this.ledRing);
-
+  final Random random = Random();
   SoundManager soundManager;
+
+  var currentGame = Games.flunkyball;
+  var currentEngineState = EngineState.idle;
+  Game? game;
 
   LedRing ledRing;
   //ledRing.setColor(Colors.green);
@@ -21,34 +34,54 @@ class GameEngine {
   //ledRing.shuffleSection(Colors.green);
   //ledRing.setSection(Colors.green, RingSection.right);
 
-  void buttonPressed(String name) {
-    print('$name pressed');
-  }
+  // void buttonPressed(String name) {
+  //   print('$name pressed');
+  // }
 
-  Future<void> redButtonPressed() async {
-    print('Red Button Pressed!');
-    ledRing.setRainbow();
-    String? soundFile = await getRandomSoundFile(); // Warten auf das Ergebnis
-    if (soundFile != null) {
-      soundManager.playSound(soundFile); // Sound abspielen
-    } else {
-      print("Kein Sound gefunden.");
+  void redButtonPressed() async {
+    switch (currentEngineState) {
+      case EngineState.idle:
+        ledRing.setRainbow();
+        String? soundFile =
+            await getRandomSoundFile(); // Warten auf das Ergebnis
+        if (soundFile != null) {
+          await soundManager.playSound(soundFile); // Sound abspielen
+          await soundManager.waitForSoundToFinish();
+          ledRing.setIdle();
+        } else {
+          print("Kein Sound gefunden.");
+        }
+        break;
+      case EngineState.gameRunning:
+        game?.redButtonPressed();
+        break;
     }
+    print('Red Button Pressed!');
   }
 
   void greenButtonPressed() {
+    switch (currentEngineState) {
+      case EngineState.idle:
+        playRandomGame();
+        ledRing.roulette(Colors.orange);
+        break;
+      case EngineState.gameRunning:
+        game?.greenButtonPressed();
+        break;
+    }
     print('Green Button Pressed!');
-    ledRing.roulette(Colors.orange);
   }
 
   void blueButtonPressed() {
+    switch (currentEngineState) {
+      case EngineState.idle:
+        ledRing.setColor(Colors.blue);
+        break;
+      case EngineState.gameRunning:
+        game?.blueButtonPressed();
+        break;
+    }
     print('Blue Button Pressed!');
-    ledRing.setColor(Colors.blue);
-    ledRing.freeze();
-  }
-
-  void soundPlayed() {
-    ledRing.setColor(Colors.black);
   }
 
   Future<String?> getRandomSoundFile() async {
@@ -70,9 +103,34 @@ class GameEngine {
     }
 
     // Zufällige Datei auswählen
-    Random random = Random();
     String randomFile = soundFiles[random.nextInt(soundFiles.length)];
     print(randomFile);
     return randomFile;
+  }
+
+  Games getRandomGame() {
+    return Games.values[random.nextInt(Games.values.length)];
+  }
+
+  void playRandomGame() {
+    currentGame = getRandomGame();
+    print("Next Game: $currentGame");
+    switch (currentGame) {
+      case Games.flunkyball:
+        game = Flunkyball(soundManager, ledRing, idleGameEngine);
+        break;
+      case Games.rageCage:
+        game = RageCage(soundManager, ledRing, idleGameEngine);
+        break;
+      default:
+        throw Exception("Game $currentGame is not implemented yet.");
+    }
+
+    currentEngineState = EngineState.gameRunning;
+    game?.play();
+  }
+
+  void idleGameEngine() {
+    currentEngineState = EngineState.idle;
   }
 }
