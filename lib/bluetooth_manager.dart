@@ -32,7 +32,7 @@ class BluetoothManager {
       return true;
     } else {
       // Handle denied permission
-      print('Location permission denied!');
+      bluetoothLogger.warning('Location permission denied!');
       return false;
     }
   }
@@ -50,10 +50,10 @@ class BluetoothManager {
     BluetoothAdapterState state = await FlutterBluePlus.adapterState.first;
 
     if (state == BluetoothAdapterState.on) {
-      print("Bluetooth is on. Starting scan...");
+      bluetoothLogger.info("Bluetooth is on. Starting scan...");
       //FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
     } else {
-      print("Bluetooth is off. Please enable it.");
+      bluetoothLogger.info("Bluetooth is off. Please enable it.");
       // Optionally: prompt the user, show dialog, or redirect to settings
     }
   }
@@ -61,17 +61,13 @@ class BluetoothManager {
   /// Call this once, and it will keep scanning (and listening) indefinitely
   void startScan() async {
     if (_scanSubscription != null) {
-      bluetoothLogger.info("Already scanning...");
+      bluetoothLogger.warning("Already scanning...");
       return;
     }
 
-    if (await FlutterBluePlus.isAvailable == false) {
+    // Updated availability check
+    if (FlutterBluePlus.isSupported == false) {
       bluetoothLogger.warning("Bluetooth is not available on this device");
-      return;
-    }
-
-    if (await FlutterBluePlus.adapterState.first != BluetoothAdapterState.on) {
-      bluetoothLogger.warning("Bluetooth is turned off");
       return;
     }
 
@@ -83,30 +79,33 @@ class BluetoothManager {
     bluetoothLogger.info("Starting scan...");
     // setup supscription
     _scanSubscription = FlutterBluePlus.scanResults.listen(
-      (result) {
-        if (result.isNotEmpty) {
-          final device = result.last.device;
-          final deviceName = device.platformName.trim();
+      (results) {
+        if (results.isNotEmpty) {
+          for (final result in results) {
+            final device = result.device;
+            final deviceName = device.platformName.trim();
+            bluetoothLogger.info("Found Device: $deviceName");
 
-          // Action Buttons
-          for (var button in buttons) {
-            if (button.name == deviceName) {
-              // Check cooldown period
-              final lastDetection = _lastDetectionTimes[deviceName];
-              final now = DateTime.now();
-              if (lastDetection == null ||
-                  now.difference(lastDetection) > _cooldownDuration) {
-                button.onTap();
-                _lastDetectionTimes[deviceName] = now;
+            // Action Buttons
+            for (var button in buttons) {
+              if (button.name == deviceName) {
+                // Check cooldown period
+                final lastDetection = _lastDetectionTimes[deviceName];
+                final now = DateTime.now();
+                if (lastDetection == null ||
+                    now.difference(lastDetection) > _cooldownDuration) {
+                  button.onTap();
+                  _lastDetectionTimes[deviceName] = now;
+                }
               }
             }
-          }
 
-          // LED-Ring
-          if (deviceName == targetDeviceName && !_connecting) {
-            _connecting = true;
-            stopScan(); // Stop scanning before connecting
-            _connectToDevice(device); // Wait for connection to complete
+            // LED-Ring
+            if (deviceName == targetDeviceName && !_connecting) {
+              _connecting = true;
+              stopScan(); // Stop scanning before connecting
+              _connectToDevice(device); // Wait for connection to complete
+            }
           }
         }
       },
@@ -122,37 +121,15 @@ class BluetoothManager {
     );
 
     if (!_connecting) {
-      // start scanning
-      // if(_received_button_press == false) {
-      //   print("start scan");
       if (FlutterBluePlus.isScanning == true) {
-        print("Already scanning...");
+        bluetoothLogger.warning("Already scanning...");
       } else {
-        print("Starting scan...");
+        bluetoothLogger.info("Starting scan...");
         FlutterBluePlus.startScan(
           oneByOne: true,
           continuousUpdates: true,
         ); // timeout: Duration(seconds: 0)
       }
-      //FlutterBluePlus.startScan();// timeout: Duration(seconds: 0)
-
-      //}
-      // else{
-      //   // If a button was pressed, stop scanning immediately
-      //   print("Button pressed, stopping scan...");
-      //   await stopScan();
-      //   _received_button_press = false; // reset the flag after stopping
-      //   startScan();
-      // }
-
-      FlutterBluePlus.startScan();
-
-      // Restart scan periodically to prevent Android scan throttling
-      Future.delayed(const Duration(seconds: 1), () async {
-        await stopScan();
-        bluetoothLogger.info("delayed start scan");
-        startScan();
-      });
     }
   }
 

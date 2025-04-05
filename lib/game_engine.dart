@@ -35,10 +35,6 @@ class GameEngine {
   //ledRing.shuffleSection(Colors.green);
   //ledRing.setSection(Colors.green, RingSection.right);
 
-  // void buttonPressed(String name) {
-  //   print('$name pressed');
-  // }
-
   void redButtonPressed() async {
     switch (currentEngineState) {
       case EngineState.idle:
