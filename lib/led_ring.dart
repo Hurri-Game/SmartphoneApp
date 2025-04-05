@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hurrigame/bluetooth_manager.dart';
 import 'package:hurrigame/button_screen.dart';
+import 'package:hurrigame/utils/logger.dart';
 
 enum RingSection {
   left(0),
@@ -32,7 +33,7 @@ class LedRing extends StatelessWidget {
 
   void setConnected(bool connected) {
     _isConnected = connected;
-    print('LED-Ring Connected: $_isConnected');
+    bluetoothLogger.info('LED-Ring Connected: $_isConnected');
     connectionKey.currentState?.setConnectedIndicator(_isConnected);
   }
 
@@ -40,11 +41,11 @@ class LedRing extends StatelessWidget {
 
   void setColor(Color color) {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
-    print(rgbString);
+    bluetoothLogger.info(rgbString);
     bluetoothManager.writeStringToCharacteristic(
       '{\"state\":\"STATIC\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
     );
@@ -52,7 +53,7 @@ class LedRing extends StatelessWidget {
 
   void setIdle() {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     bluetoothManager.writeStringToCharacteristic('{\"state\":\"IDLE\"}');
@@ -60,7 +61,7 @@ class LedRing extends StatelessWidget {
 
   void setRainbow() {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     bluetoothManager.writeStringToCharacteristic('{\"state\":\"RAINBOW\"}');
@@ -68,7 +69,7 @@ class LedRing extends StatelessWidget {
 
   void setRainbowWipe() {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     bluetoothManager.writeStringToCharacteristic(
@@ -78,7 +79,7 @@ class LedRing extends StatelessWidget {
 
   void freeze() {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     bluetoothManager.writeStringToCharacteristic('{\"state\":\"FREEZE\"}');
@@ -86,11 +87,11 @@ class LedRing extends StatelessWidget {
 
   void pulse(Color color) {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
-    print(rgbString);
+    bluetoothLogger.info(rgbString);
     bluetoothManager.writeStringToCharacteristic(
       '{\"state\":\"PULSE\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
     );
@@ -98,7 +99,7 @@ class LedRing extends StatelessWidget {
 
   void roulette(Color color) {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
@@ -109,7 +110,7 @@ class LedRing extends StatelessWidget {
 
   void randomNumber(Color color, int numberOfLeds) {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
@@ -120,7 +121,7 @@ class LedRing extends StatelessWidget {
 
   void shuffleSection(Color color) {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
@@ -131,12 +132,12 @@ class LedRing extends StatelessWidget {
 
   void setSection(Color color, RingSection section) {
     if (!_isConnected) {
-      print('Not connected to LED ring');
+      bluetoothLogger.info('Not connected to LED ring');
       return;
     }
     final rgbString = '${color.red},${color.green},${color.blue}';
     final sectionValue = section.value;
-    print(section.value);
+    bluetoothLogger.info(section.value);
     bluetoothManager.writeStringToCharacteristic(
       '{\"state\":\"SHOW_SECTION\",\"parameter\":[{\"color\":\"$rgbString\"},{\"number\":\"$sectionValue\"}]}',
     );
@@ -156,7 +157,7 @@ class LedRing extends StatelessWidget {
         ),
       ),
       onPressed: () {
-        print("Pressed Ring!");
+        bluetoothLogger.info("Pressed Ring!");
       },
       child: const Text('', style: TextStyle(fontWeight: FontWeight.bold)),
     );
