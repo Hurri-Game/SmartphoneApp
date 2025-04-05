@@ -41,3 +41,5 @@ android/*.iml
 
 # Linux shared objects
 *.so
+
+**/project.pbxproj
