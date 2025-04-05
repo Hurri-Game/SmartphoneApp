@@ -10,7 +10,7 @@ enum EngineState { idle, gameRunning }
 
 enum Games {
   flunkyball,
-  // rageCage,
+  rageCage,
   // beerPong,
 }
 
@@ -108,29 +108,26 @@ class GameEngine {
     return randomFile;
   }
 
-  String getRandomGame() {
-    return Games.values[random.nextInt(Games.values.length)].name;
+  Games getRandomGame() {
+    return Games.values[random.nextInt(Games.values.length)];
   }
 
   void playRandomGame() {
-    String nextGame = getRandomGame();
-    print("Next Game: $nextGame");
-    if (nextGame == "flunkyball") {
-      game = Flunkyball(soundManager, ledRing, idleGameEngine);
-      currentGame = Games.flunkyball;
-    } else {
-      print("$nextGame is not implemented yet.");
-      return;
+    currentGame = getRandomGame();
+    print("Next Game: $currentGame");
+    switch (currentGame) {
+      case Games.flunkyball:
+        game = Flunkyball(soundManager, ledRing, idleGameEngine);
+        break;
+      case Games.rageCage:
+        game = RageCage(soundManager, ledRing, idleGameEngine);
+        break;
+      default:
+        throw Exception("Game $currentGame is not implemented yet.");
     }
+
     currentEngineState = EngineState.gameRunning;
     game?.play();
-    // } else if (nextGame == "RageCage") {
-    //   currentGame = Games.rageCage;
-    //   game = RageCage(soundManager, ledRing);
-    // } else if (nextGame == "BeerPong") {
-    //   currentGame = Games.beerPong;
-    //   game = BeerPong(soundManager, ledRing);
-    // }
   }
 
   void idleGameEngine() {

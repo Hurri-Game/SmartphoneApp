@@ -75,4 +75,21 @@ class SoundManager {
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
+
+  Future<void> loopSound(String filename) async {
+    try {
+      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      await _audioPlayer.play(AssetSource(filename));
+    } catch (e) {
+      print(e);
+    }
+  }
+  Future<void> stopLoop() async {
+    try {
+      await _audioPlayer.setReleaseMode(ReleaseMode.release);
+      await _audioPlayer.stop();
+    } catch (e) {
+      print(e);
+    }
+  }
 }
