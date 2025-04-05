@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 List<ActionButton> buttons = [
   ActionButton(
-    'HurriButton_Bullshit',
+    'RedActionButton',
     Colors.red,
     () {}, // temporary empty callback
   ),
