@@ -19,7 +19,7 @@ class ActionButton extends StatelessWidget {
         size ?? screenSize.width * 0.45; // Use passed size or default
     final borderWidth = screenSize.width * 0.05;
     final borderRadius = screenSize.width * 0.1;
-    final padding = screenSize.width * 0.02;
+    final padding = screenSize.width * 0.04;
 
     return Padding(
       padding: EdgeInsets.all(padding),
