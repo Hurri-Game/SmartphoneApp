@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ActionButton extends StatelessWidget {
-  ActionButton(this.name, this.color, this.onTap, {super.key});
+  ActionButton(this.name, this.color, this.onTap, {this.size, super.key});
 
   final Color color;
   final String name;
+  final double? size; // Add size parameter
   late void Function() onTap;
 
   void setOnTapFunc(void Function() onTapFunc) {
@@ -13,17 +14,23 @@ class ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final buttonSize =
+        size ?? screenSize.width * 0.45; // Use passed size or default
+    final borderWidth = screenSize.width * 0.05;
+    final borderRadius = screenSize.width * 0.1;
+    final padding = screenSize.width * 0.02;
+
     return Padding(
-      padding: const EdgeInsets.all(20), // space outside the button
+      padding: EdgeInsets.all(padding),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          fixedSize: const Size(200, 200),
+          fixedSize: Size(buttonSize, buttonSize),
           backgroundColor: color,
-          side: const BorderSide(color: Colors.black, width: 30),
+          side: BorderSide(color: Colors.black, width: borderWidth),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(60),
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
-          // minimal or no padding here
           padding: EdgeInsets.zero,
         ),
         onPressed: onTap,
