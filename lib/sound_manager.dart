@@ -63,4 +63,12 @@ class SoundManager {
       print(e);
     }
   }
+
+  Future<void> stopSound() async {
+    try {
+      await _audioPlayer.stop();
+    } catch (e) {
+      print(e);
+    }
+  }
 }
