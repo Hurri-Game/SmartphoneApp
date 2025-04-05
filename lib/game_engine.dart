@@ -4,11 +4,28 @@ import 'package:hurrigame/sound_manager.dart';
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:hurrigame/games.dart';
+
+enum EngineState
+{
+  idle,
+  gameRunning,
+}
+
+enum Games {
+  flunkyball,
+  // rageCage,
+  // beerPong,
+}
 
 class GameEngine {
   GameEngine(this.soundManager, this.ledRing);
-
+  final Random random = Random();
   SoundManager soundManager;
+
+  var currentGame = Games.flunkyball;
+  var currentEngineState = EngineState.idle;
+  Game? game;
 
   LedRing ledRing;
   //ledRing.setColor(Colors.green);
@@ -21,11 +38,11 @@ class GameEngine {
   //ledRing.shuffleSection(Colors.green);
   //ledRing.setSection(Colors.green, RingSection.right);
 
-  void buttonPressed(String name) {
-    print('$name pressed');
-  }
+  // void buttonPressed(String name) {
+  //   print('$name pressed');
+  // }
 
-  Future<void> redButtonPressed() async {
+  void redButtonPressed() async {
     print('Red Button Pressed!');
     ledRing.setRainbow();
     String? soundFile = await getRandomSoundFile(); // Warten auf das Ergebnis
@@ -37,6 +54,12 @@ class GameEngine {
   }
 
   void greenButtonPressed() {
+    if (currentEngineState == EngineState.idle) {
+      playRandomGame();
+    } else if (currentEngineState == EngineState.gameRunning) {
+      game?.greenButtonPressed();
+      currentEngineState = EngineState.idle;
+    }
     print('Green Button Pressed!');
     ledRing.roulette(Colors.orange);
   }
@@ -70,9 +93,36 @@ class GameEngine {
     }
 
     // Zufällige Datei auswählen
-    Random random = Random();
     String randomFile = soundFiles[random.nextInt(soundFiles.length)];
     print(randomFile);
     return randomFile;
+  }
+
+  String getRandomGame() {
+    return Games.values[
+        random.nextInt(Games.values.length)].name;
+  }
+
+  void playRandomGame() {
+    String nextGame = getRandomGame();
+    print("Next Game: $nextGame");
+    if (nextGame == "flunkyball") {
+      game = Flunkyball(soundManager, ledRing);
+      currentGame = Games.flunkyball;
+      }
+    else
+    {
+      print("$nextGame is not implemented yet.");
+      return;
+    }
+      currentEngineState = EngineState.gameRunning;
+      game?.play();
+    // } else if (nextGame == "RageCage") {
+    //   currentGame = Games.rageCage;
+    //   game = RageCage(soundManager, ledRing);
+    // } else if (nextGame == "BeerPong") {
+    //   currentGame = Games.beerPong;
+    //   game = BeerPong(soundManager, ledRing);
+    // }
   }
 }
