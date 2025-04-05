@@ -71,4 +71,8 @@ class SoundManager {
       print(e);
     }
   }
+
+  bool isPlaying() {
+    return _audioPlayer.state == PlayerState.playing;
+  }
 }
