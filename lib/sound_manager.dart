@@ -10,12 +10,12 @@ class SoundManager {
     'com.example.audio_control',
   );
 
-  void initState() {
+  void initState(String sessionType) {
     _audioPlayer.onPlayerComplete.listen((event) {
       debugPrint("Audio playback complete. Now deactivating audio session.");
       _deactivateAudioSession();
     });
-    _configureAudioSession();
+    _configureAudioSession(sessionType);
   }
 
   // Calls Swift code to setActive(false).
@@ -27,8 +27,29 @@ class SoundManager {
     }
   }
 
-  Future<void> _configureAudioSession() async {
-    await _audioPlayer.setAudioContext(
+  Future<void> _configureAudioSession(String sessionType) async {
+
+    if (sessionType == "games") {
+      await _audioPlayer.setAudioContext(
+      AudioContext(
+        iOS: AudioContextIOS(
+          category: AVAudioSessionCategory.playback,
+          options: {
+            AVAudioSessionOptions.interruptSpokenAudioAndMixWithOthers,
+          },
+        ),
+        android: AudioContextAndroid(
+          isSpeakerphoneOn: true,
+          stayAwake: true,
+          contentType: AndroidContentType.music,
+          usageType: AndroidUsageType.media,
+          audioFocus: AndroidAudioFocus.gainTransient,
+        ),
+      ),
+    );
+    
+    } else if (sessionType == "bullshit") {
+            await _audioPlayer.setAudioContext(
       AudioContext(
         iOS: AudioContextIOS(
           category: AVAudioSessionCategory.playback,
@@ -46,6 +67,9 @@ class SoundManager {
         ),
       ),
     );
+    }
+
+
   }
 
   Future<void> playSound(String filename) async {

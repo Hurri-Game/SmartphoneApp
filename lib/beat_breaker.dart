@@ -19,15 +19,18 @@ class BeatBreaker extends StatefulWidget {
 class _BeatBreakerState extends State<BeatBreaker> {
   var activeScreen = 'button-screen';
   late BluetoothManager bluetoothManager;
-  late SoundManager soundManager;
+  late SoundManager soundManagerBullshit;
+  late SoundManager soundManagerGames;
   late GameEngine gameEngine;
   late LedRing ledRing;
 
   @override
   void initState() {
     super.initState();
-    soundManager = SoundManager();
-    soundManager.initState();
+    soundManagerBullshit = SoundManager();
+    soundManagerGames = SoundManager();
+    soundManagerBullshit.initState("bullshit");
+    soundManagerGames.initState("games");
 
     // Initialize buttons first, without callbacks
 
@@ -38,7 +41,7 @@ class _BeatBreakerState extends State<BeatBreaker> {
     );
 
     bluetoothManager = BluetoothManager(buttons, ledRing);
-    gameEngine = GameEngine(soundManager, ledRing);
+    gameEngine = GameEngine(soundManagerBullshit, soundManagerGames, ledRing);
 
     ledRing.setBluetoothManager(bluetoothManager);
     buttons[0].setOnTapFunc(gameEngine.redButtonPressed);
