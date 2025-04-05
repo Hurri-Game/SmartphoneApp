@@ -15,11 +15,11 @@ enum Games {
 }
 
 class GameEngine {
-  GameEngine(this.soundManagerBullshit, this.soundManagerGames, this.ledRing);
+  GameEngine(this.soundManagerDuck, this.soundManagerSilent, this.ledRing);
   final Random random = Random();
 
-  SoundManager soundManagerBullshit;
-  SoundManager soundManagerGames;
+  SoundManager soundManagerDuck;
+  SoundManager soundManagerSilent;
 
   var currentGame = Games.flunkyball;
   var currentEngineState = EngineState.idle;
@@ -47,8 +47,8 @@ class GameEngine {
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {
-          await soundManagerBullshit.playSound(soundFile); // Sound abspielen
-          await soundManagerBullshit.waitForSoundToFinish();
+          await soundManagerDuck.playSound(soundFile); // Sound abspielen
+          await soundManagerDuck.waitForSoundToFinish();
           ledRing.setIdle();
         } else {
           print("Kein Sound gefunden.");
@@ -120,10 +120,10 @@ class GameEngine {
     print("Next Game: $currentGame");
     switch (currentGame) {
       case Games.flunkyball:
-        game = Flunkyball(soundManagerGames, ledRing, idleGameEngine);
+        game = Flunkyball(soundManagerSilent, ledRing, idleGameEngine);
         break;
       case Games.rageCage:
-        game = RageCage(soundManagerGames, ledRing, idleGameEngine);
+        game = RageCage(soundManagerSilent, ledRing, idleGameEngine);
         break;
       default:
         throw Exception("Game $currentGame is not implemented yet.");
