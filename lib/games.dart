@@ -2,10 +2,11 @@ import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
 
 abstract class Game {
-  Game(this.soundManager, this.ledRing);
+  Game(this.soundManager, this.ledRing, this.stopCallback);
 
   final SoundManager soundManager;
   final LedRing? ledRing;
+  final void Function() stopCallback;
 
   void greenButtonPressed();
   void redButtonPressed();
@@ -15,13 +16,11 @@ abstract class Game {
 }
 
 class Flunkyball extends Game {
-
-  Flunkyball(this.soundManager, this.ledRing) : super(soundManager, ledRing);
-  
-  @override
-  final SoundManager soundManager;
-  @override
-  final LedRing? ledRing;
+  Flunkyball(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -40,15 +39,21 @@ class Flunkyball extends Game {
   }
 
   @override
-  void play() {
-    soundManager.playSound('sounds/games/flunky-song.mp3');
+  void play() async {
+    await soundManager.playSound('sounds/games/flunky-song.mp3');
     print('Flunkyball is being played!');
-
+    while (soundManager.isPlaying()) {
+      // Wait until the sound is finished playing
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    stopCallback();
+    print('Flunkyball stopped!');
   }
 
   @override
   void stop() {
     soundManager.stopSound();
+    stopCallback();
     print('Flunkyball stopped!');
   }
 }

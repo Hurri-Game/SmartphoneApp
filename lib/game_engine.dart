@@ -107,7 +107,7 @@ class GameEngine {
     String nextGame = getRandomGame();
     print("Next Game: $nextGame");
     if (nextGame == "flunkyball") {
-      game = Flunkyball(soundManager, ledRing);
+      game = Flunkyball(soundManager, ledRing, idleGameEngine);
       currentGame = Games.flunkyball;
       }
     else
@@ -124,5 +124,9 @@ class GameEngine {
     //   currentGame = Games.beerPong;
     //   game = BeerPong(soundManager, ledRing);
     // }
+  }
+
+  void idleGameEngine() {
+    currentEngineState = EngineState.idle;
   }
 }
