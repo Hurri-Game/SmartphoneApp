@@ -47,10 +47,7 @@ class Flunkyball extends Game {
   void play() async {
     await soundManager.playSound('sounds/games/flunky-song.mp3');
     print('Flunkyball is being played!');
-    while (soundManager.isPlaying()) {
-      // Wait until the sound is finished playing
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
+    await soundManager.waitForSoundToFinish();
     stopCallback();
     print('Flunkyball stopped!');
   }

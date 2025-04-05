@@ -75,4 +75,10 @@ class SoundManager {
   bool isPlaying() {
     return _audioPlayer.state == PlayerState.playing;
   }
+
+  Future<void> waitForSoundToFinish() async {
+    while (isPlaying()) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
 }
