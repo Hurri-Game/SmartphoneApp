@@ -3,6 +3,7 @@ import 'package:hurrigame/action_button.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:hurrigame/led_ring.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:hurrigame/utils/logger.dart';
 
 class BluetoothManager {
@@ -25,6 +26,37 @@ class BluetoothManager {
   // Add map to track last detection time for each button
   final Map<String, DateTime> _lastDetectionTimes = {};
   static const _cooldownDuration = Duration(seconds: 1);
+
+  Future<bool> checkPermissions() async {
+    if (await Permission.location.request().isGranted) {
+      return true;
+    } else {
+      // Handle denied permission
+      print('Location permission denied!');
+      return false;
+    }
+  }
+
+  Future<void> requestBluetoothPermissions() async {
+    if (await Permission.bluetoothScan.isDenied) {
+      await Permission.bluetoothScan.request();
+    }
+    if (await Permission.bluetoothConnect.isDenied) {
+      await Permission.bluetoothConnect.request();
+    }
+  }
+
+  Future<void> startBluetoothOn() async {
+    BluetoothAdapterState state = await FlutterBluePlus.adapterState.first;
+
+    if (state == BluetoothAdapterState.on) {
+      print("Bluetooth is on. Starting scan...");
+      //FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    } else {
+      print("Bluetooth is off. Please enable it.");
+      // Optionally: prompt the user, show dialog, or redirect to settings
+    }
+  }
 
   /// Call this once, and it will keep scanning (and listening) indefinitely
   void startScan() async {
@@ -91,6 +123,28 @@ class BluetoothManager {
 
     if (!_connecting) {
       // start scanning
+      // if(_received_button_press == false) {
+      //   print("start scan");
+      if (FlutterBluePlus.isScanning == true) {
+        print("Already scanning...");
+      } else {
+        print("Starting scan...");
+        FlutterBluePlus.startScan(
+          oneByOne: true,
+          continuousUpdates: true,
+        ); // timeout: Duration(seconds: 0)
+      }
+      //FlutterBluePlus.startScan();// timeout: Duration(seconds: 0)
+
+      //}
+      // else{
+      //   // If a button was pressed, stop scanning immediately
+      //   print("Button pressed, stopping scan...");
+      //   await stopScan();
+      //   _received_button_press = false; // reset the flag after stopping
+      //   startScan();
+      // }
+
       FlutterBluePlus.startScan();
 
       // Restart scan periodically to prevent Android scan throttling
