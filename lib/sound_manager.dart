@@ -29,13 +29,15 @@ class SoundManager {
 
   Future<void> _configureAudioSession(String sessionType) async {
 
-    if (sessionType == "games") {
+    if (sessionType == "silent") {
+      
+      print("Config silent");
       await _audioPlayer.setAudioContext(
       AudioContext(
         iOS: AudioContextIOS(
           category: AVAudioSessionCategory.playback,
           options: {
-            AVAudioSessionOptions.interruptSpokenAudioAndMixWithOthers,
+          
           },
         ),
         android: AudioContextAndroid(
@@ -48,7 +50,8 @@ class SoundManager {
       ),
     );
     
-    } else if (sessionType == "bullshit") {
+    } else if (sessionType == "duck") {
+      print("Config duck");
             await _audioPlayer.setAudioContext(
       AudioContext(
         iOS: AudioContextIOS(
@@ -72,10 +75,11 @@ class SoundManager {
 
   }
 
-  Future<void> playSound(String filename) async {
+  Future<void> playSound(String filename,{String sessionType="silent"}) async {
     // beep.mp3 must be declared in pubspec.yaml under assets:
     // assets/sounds/beep.mp3
     try {
+      await _configureAudioSession(sessionType);
       await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
       print(e);
