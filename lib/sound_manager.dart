@@ -85,6 +85,7 @@ class SoundManager {
   Future<void> stopSound() async {
     try {
       await _audioPlayer.stop();
+      await _deactivateAudioSession();
     } catch (e) {
       print(e);
     }
@@ -112,6 +113,7 @@ class SoundManager {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.release);
       await _audioPlayer.stop();
+      await _deactivateAudioSession();
     } catch (e) {
       print(e);
     }
