@@ -38,7 +38,7 @@ class GameEngine {
   void redButtonPressed() async {
     switch (currentEngineState) {
       case EngineState.idle:
-        ledRing.setRainbow();
+        ledRing.setColor(Colors.red);
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {

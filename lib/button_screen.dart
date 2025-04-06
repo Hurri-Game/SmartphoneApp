@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hurrigame/data/action_buttons.dart';
 
-final GlobalKey<_ButtonScreenState> connectionKey =
-    GlobalKey<_ButtonScreenState>();
+final GlobalKey<ButtonScreenState> connectionKey =
+    GlobalKey<ButtonScreenState>();
 
 class ButtonScreen extends StatefulWidget {
   ButtonScreen(this.switchScreen, {Key? key}) : super(key: connectionKey);
@@ -11,11 +11,11 @@ class ButtonScreen extends StatefulWidget {
 
   @override
   State<ButtonScreen> createState() {
-    return _ButtonScreenState();
+    return ButtonScreenState();
   }
 }
 
-class _ButtonScreenState extends State<ButtonScreen> {
+class ButtonScreenState extends State<ButtonScreen> {
   var ringStatusColor = Colors.black;
 
   void setConnectedIndicator(var connected) {

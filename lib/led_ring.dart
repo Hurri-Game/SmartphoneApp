@@ -44,10 +44,11 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    final rgbString = '${color.red},${color.green},${color.blue}';
+    final rgbString =
+        '${(color.r * 255).toInt()},${(color.g * 255).toInt()},${(color.b * 255).toInt()}';
     bluetoothLogger.info(rgbString);
     bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"STATIC\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
+      '{"state":"STATIC","parameter":[{"color":"$rgbString"}]}',
     );
   }
 
@@ -56,7 +57,7 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic('{\"state\":\"IDLE\"}');
+    bluetoothManager.writeStringToCharacteristic('{"state":"IDLE"}');
   }
 
   void setRainbow() {
@@ -64,7 +65,7 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic('{\"state\":\"RAINBOW\"}');
+    bluetoothManager.writeStringToCharacteristic('{"state":"RAINBOW"}');
   }
 
   void setRainbowWipe() {
@@ -72,9 +73,7 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"RAINBOW_WIPE\"}',
-    );
+    bluetoothManager.writeStringToCharacteristic('{"state":"RAINBOW_WIPE"}');
   }
 
   void freeze() {
@@ -82,7 +81,7 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    bluetoothManager.writeStringToCharacteristic('{\"state\":\"FREEZE\"}');
+    bluetoothManager.writeStringToCharacteristic('{"state":"FREEZE"}');
   }
 
   void pulse(Color color) {
@@ -90,10 +89,11 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    final rgbString = '${color.red},${color.green},${color.blue}';
+    final rgbString =
+        '${(color.r * 255).toInt()},${(color.g * 255).toInt()},${(color.b * 255).toInt()}';
     bluetoothLogger.info(rgbString);
     bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"PULSE\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
+      '{"state":"PULSE","parameter":[{"color":"$rgbString"}]}',
     );
   }
 
@@ -102,9 +102,10 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    final rgbString = '${color.red},${color.green},${color.blue}';
+    final rgbString =
+        '${(color.r * 255).toInt()},${(color.g * 255).toInt()},${(color.b * 255).toInt()}';
     bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"ROULETTE\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
+      '{"state":"ROULETTE","parameter":[{"color":"$rgbString"}]}',
     );
   }
 
@@ -113,9 +114,10 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    final rgbString = '${color.red},${color.green},${color.blue}';
+    final rgbString =
+        '${(color.r * 255).toInt()},${(color.g * 255).toInt()},${(color.b * 255).toInt()}';
     bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"RANDOM_NUMBER\",\"parameter\":[{\"color\":\"$rgbString\"},{\"number\":\"$numberOfLeds\"}]}',
+      '{"state":"RANDOM_NUMBER","parameter":[{"color":"$rgbString"},{"number":"$numberOfLeds"}]}',
     );
   }
 
@@ -124,9 +126,10 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    final rgbString = '${color.red},${color.green},${color.blue}';
+    final rgbString =
+        '${(color.r * 255).toInt()},${(color.g * 255).toInt()},${(color.b * 255).toInt()}';
     bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"SHUFFLE_SECTIONS\",\"parameter\":[{\"color\":\"$rgbString\"}]}',
+      '{"state":"SHUFFLE_SECTIONS","parameter":[{"color":"$rgbString"}]}',
     );
   }
 
@@ -135,11 +138,12 @@ class LedRing extends StatelessWidget {
       bluetoothLogger.info('Not connected to LED ring');
       return;
     }
-    final rgbString = '${color.red},${color.green},${color.blue}';
+    final rgbString =
+        '${(color.r * 255).toInt()},${(color.g * 255).toInt()},${(color.b * 255).toInt()}';
     final sectionValue = section.value;
     bluetoothLogger.info(section.value);
     bluetoothManager.writeStringToCharacteristic(
-      '{\"state\":\"SHOW_SECTION\",\"parameter\":[{\"color\":\"$rgbString\"},{\"number\":\"$sectionValue\"}]}',
+      '{"state":"SHOW_SECTION","parameter":[{"color":"$rgbString"},{"number":"$sectionValue"}]}',
     );
   }
 

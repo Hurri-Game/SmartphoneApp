@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:logging/logging.dart';
 
 // Create loggers for different parts of the app
