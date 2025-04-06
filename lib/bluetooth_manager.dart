@@ -3,6 +3,8 @@ import 'package:hurrigame/action_button.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:hurrigame/led_ring.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:hurrigame/utils/logger.dart';
 
 class BluetoothManager {
   BluetoothManager(this.buttons, this.ledRing);
@@ -25,81 +27,118 @@ class BluetoothManager {
   final Map<String, DateTime> _lastDetectionTimes = {};
   static const _cooldownDuration = Duration(seconds: 1);
 
+  Future<bool> checkPermissions() async {
+    if (await Permission.location.request().isGranted) {
+      return true;
+    } else {
+      // Handle denied permission
+      bluetoothLogger.warning('Location permission denied!');
+      return false;
+    }
+  }
+
+  Future<void> requestBluetoothPermissions() async {
+    if (await Permission.bluetoothScan.isDenied) {
+      await Permission.bluetoothScan.request();
+    }
+    if (await Permission.bluetoothConnect.isDenied) {
+      await Permission.bluetoothConnect.request();
+    }
+  }
+
+  Future<void> startBluetoothOn() async {
+    BluetoothAdapterState state = await FlutterBluePlus.adapterState.first;
+
+    if (state == BluetoothAdapterState.on) {
+      bluetoothLogger.info("Bluetooth is on. Starting scan...");
+      //FlutterBluePlus.startScan(timeout: const Duration(seconds: 5));
+    } else {
+      bluetoothLogger.info("Bluetooth is off. Please enable it.");
+      // Optionally: prompt the user, show dialog, or redirect to settings
+    }
+  }
+
   /// Call this once, and it will keep scanning (and listening) indefinitely
-  void startScan() {
+  void startScan() async {
     if (_scanSubscription != null) {
-      print("Already scanning...");
+      bluetoothLogger.warning("Already scanning...");
       return;
     }
 
     // Updated availability check
     if (FlutterBluePlus.isSupported == false) {
-      print("Bluetooth is not available on this device");
+      bluetoothLogger.warning("Bluetooth is not available on this device");
       return;
     }
 
     if (_connecting) {
-      print("Currently connecting to device");
+      bluetoothLogger.info("Currently connecting to device");
       return;
     }
 
-    print("Starting scan...");
+    await requestBluetoothPermissions();
+    // await checkPermissions();
+
+    bluetoothLogger.info("Starting scan...");
     // setup supscription
     _scanSubscription = FlutterBluePlus.scanResults.listen(
-      (result) {
-        if (result.isNotEmpty) {
-          final device = result.last.device;
-          final deviceName = device.platformName.trim();
+      (results) {
+        if (results.isNotEmpty) {
+          for (final result in results) {
+            final device = result.device;
+            final deviceName = device.platformName.trim();
+            bluetoothLogger.info("Found Device: $deviceName");
 
-          // Action Buttons
-          for (var button in buttons) {
-            if (button.name == deviceName) {
-              // Check cooldown period
-              final lastDetection = _lastDetectionTimes[deviceName];
-              final now = DateTime.now();
-              if (lastDetection == null ||
-                  now.difference(lastDetection) > _cooldownDuration) {
-                button.onTap();
-                _lastDetectionTimes[deviceName] = now;
+            // Action Buttons
+            for (var button in buttons) {
+              if (button.name == deviceName) {
+                // Check cooldown period
+                final lastDetection = _lastDetectionTimes[deviceName];
+                final now = DateTime.now();
+                if (lastDetection == null ||
+                    now.difference(lastDetection) > _cooldownDuration) {
+                  button.onTap();
+                  _lastDetectionTimes[deviceName] = now;
+                }
               }
             }
-          }
 
-          // LED-Ring
-          if (deviceName == targetDeviceName && !_connecting) {
-            _connecting = true;
-            stopScan(); // Stop scanning before connecting
-            _connectToDevice(device); // Wait for connection to complete
+            // LED-Ring
+            if (deviceName == targetDeviceName && !_connecting) {
+              _connecting = true;
+              stopScan(); // Stop scanning before connecting
+              _connectToDevice(device); // Wait for connection to complete
+            }
           }
         }
       },
       onError: (error) {
-        print("Scan error: $error");
+        bluetoothLogger.severe("Scan error", error);
         stopScan();
         // Restart scan after error with delay
         Future.delayed(const Duration(seconds: 2), () {
-          print("delayed error start scan");
+          bluetoothLogger.info("delayed error start scan");
           startScan();
         });
       },
     );
 
     if (!_connecting) {
-      // start scanning
-      FlutterBluePlus.startScan();
-
-      // Restart scan periodically to prevent Android scan throttling
-      Future.delayed(const Duration(seconds: 1), () async {
-        await stopScan();
-        print("delayed start scan");
-        startScan();
-      });
+      if (FlutterBluePlus.isScanning == true) {
+        bluetoothLogger.warning("Already scanning...");
+      } else {
+        bluetoothLogger.info("Starting scan...");
+        FlutterBluePlus.startScan(
+          oneByOne: true,
+          continuousUpdates: true,
+        ); // timeout: Duration(seconds: 0)
+      }
     }
   }
 
   Future<void> stopScan() async {
     if (_scanSubscription != null) {
-      print("Cancle subscription");
+      bluetoothLogger.info("Cancle subscription");
       FlutterBluePlus.cancelWhenScanComplete(_scanSubscription);
       await _scanSubscription!.cancel();
       _scanSubscription = null;
@@ -109,42 +148,46 @@ class BluetoothManager {
 
   Future<void> _connectToDevice(BluetoothDevice device) async {
     if (ledRing.isConnected) {
-      print("Already connected");
+      bluetoothLogger.info("Already connected");
       _connecting = false;
       return;
     }
     try {
-      print("Connecting to ${device.platformName}...");
+      bluetoothLogger.info("Connecting to ${device.name}...");
       await device.connect();
-      print("Connected to ${device.platformName}");
+      bluetoothLogger.info("Connected to ${device.name}");
 
       connectedDevice = device;
       ledRing.setConnected(true);
 
-      print("Discovering services...");
+      bluetoothLogger.info("Discovering services...");
       final services = await device.discoverServices().timeout(
         const Duration(seconds: 5),
         onTimeout: () {
-          print("Service discovery timed out");
+          bluetoothLogger.severe("Service discovery timed out");
           throw TimeoutException('Service discovery timed out');
         },
       );
-      print("Services discovered: ${services.length} services found");
+      bluetoothLogger.info(
+        "Services discovered: ${services.length} services found",
+      );
 
       // Log all discovered services to help debug
       for (var service in services) {
-        print("Found service: ${service.uuid}");
+        bluetoothLogger.fine("Found service: ${service.uuid}");
       }
 
       for (BluetoothService s in services) {
         if (s.uuid == serviceGuid) {
-          print("Found target service: $serviceGuid");
+          bluetoothLogger.info("Found target service: $serviceGuid");
           for (BluetoothCharacteristic c in s.characteristics) {
             if (c.uuid == characteristicGuid) {
               targetCharacteristic = c;
-              print("Found target characteristic: $characteristicGuid");
+              bluetoothLogger.info(
+                "Found target characteristic: $characteristicGuid",
+              );
               _connecting = false;
-              print("characteristic start scan");
+              bluetoothLogger.info("characteristic start scan");
               startScan();
               // If you want, you can now read, write, or setNotify on c.
               // You can keep scanning in the background or stop scanning,
@@ -154,17 +197,19 @@ class BluetoothManager {
           }
         }
       }
-      print("characteristic not found start scan");
+      bluetoothLogger.info("characteristic not found start scan");
       _connecting = false;
       startScan();
-      print("Target service/characteristic not found on ${device.name}.");
-    } catch (e) {
-      print("Error while connecting: $e");
+      bluetoothLogger.info(
+        "Target service/characteristic not found on ${device.name}.",
+      );
+    } catch (e, stackTrace) {
+      bluetoothLogger.severe("Error while connecting", e, stackTrace);
       _connecting = false;
       connectedDevice?.disconnect();
       connectedDevice = null;
       ledRing.setConnected(false);
-      print("error connect to device start scan");
+      bluetoothLogger.info("error connect to device start scan");
       startScan();
     }
   }
@@ -172,7 +217,7 @@ class BluetoothManager {
   /// Example write method
   Future<void> writeStringToCharacteristic(String data) async {
     if (targetCharacteristic == null || !ledRing.isConnected) {
-      print('Not connected or characteristic not found');
+      bluetoothLogger.warning('Not connected or characteristic not found');
       connectedDevice = null;
       ledRing.setConnected(false);
       return;
@@ -181,9 +226,9 @@ class BluetoothManager {
     try {
       final bytes = utf8.encode(data);
       await targetCharacteristic!.write(bytes, withoutResponse: false);
-      print('Wrote: $data');
-    } catch (e) {
-      print('Error writing: $e');
+      bluetoothLogger.fine('Wrote: $data');
+    } catch (e, stackTrace) {
+      bluetoothLogger.severe('Error writing', e, stackTrace);
       connectedDevice?.disconnect();
       connectedDevice = null;
       ledRing.setConnected(false);

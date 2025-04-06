@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
+import 'package:hurrigame/utils/logger.dart';
 
 class SoundManager {
   SoundManager();
@@ -12,7 +13,9 @@ class SoundManager {
 
   void initState(String sessionType) {
     _audioPlayer.onPlayerComplete.listen((event) {
-      debugPrint("Audio playback complete. Now deactivating audio session.");
+      gameLogger.info(
+        "Audio playback complete. Now deactivating audio session.",
+      );
       _deactivateAudioSession();
     });
     _configureAudioSession(sessionType);
@@ -23,7 +26,7 @@ class SoundManager {
     try {
       await _audioControlChannel.invokeMethod('deactivateAudioSession');
     } catch (e) {
-      debugPrint('Error calling deactivateAudioSession: $e');
+      gameLogger.info('Error calling deactivateAudioSession: $e');
     }
   }
 
@@ -82,7 +85,7 @@ class SoundManager {
       await _configureAudioSession(sessionType);
       await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
-      print(e);
+      gameLogger.info(e);
     }
   }
 
@@ -91,7 +94,7 @@ class SoundManager {
       await _audioPlayer.stop();
       await _deactivateAudioSession();
     } catch (e) {
-      print(e);
+      gameLogger.warning(e);
     }
   }
 
@@ -110,16 +113,17 @@ class SoundManager {
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
       await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
-      print(e);
+      gameLogger.warning(e);
     }
   }
+
   Future<void> stopLoop() async {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.release);
       await _audioPlayer.stop();
       await _deactivateAudioSession();
     } catch (e) {
-      print(e);
+      gameLogger.warning(e);
     }
   }
 }
