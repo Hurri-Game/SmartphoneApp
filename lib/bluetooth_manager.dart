@@ -76,6 +76,9 @@ class BluetoothManager {
       return;
     }
 
+    await requestBluetoothPermissions();
+    await checkPermissions();
+
     bluetoothLogger.info("Starting scan...");
     // setup supscription
     _scanSubscription = FlutterBluePlus.scanResults.listen(
@@ -150,9 +153,9 @@ class BluetoothManager {
       return;
     }
     try {
-      bluetoothLogger.info("Connecting to ${device.platformName}...");
+      bluetoothLogger.info("Connecting to ${device.name}...");
       await device.connect();
-      bluetoothLogger.info("Connected to ${device.platformName}");
+      bluetoothLogger.info("Connected to ${device.name}");
 
       connectedDevice = device;
       ledRing.setConnected(true);
