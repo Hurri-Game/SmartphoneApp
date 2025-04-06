@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:hurrigame/games.dart';
+import 'package:hurrigame/utils/logger.dart';
 
 enum EngineState { idle, gameRunning }
 
@@ -18,6 +19,7 @@ enum Games {
 class GameEngine {
   GameEngine(this.soundManager, this.ledRing);
   final Random random = Random();
+
   SoundManager soundManager;
 
   var currentGame = Games.flunkyball;
@@ -35,10 +37,6 @@ class GameEngine {
   //ledRing.shuffleSection(Colors.green);
   //ledRing.setSection(Colors.green, RingSection.right);
 
-  // void buttonPressed(String name) {
-  //   print('$name pressed');
-  // }
-
   void redButtonPressed() async {
     switch (currentEngineState) {
       case EngineState.idle:
@@ -46,18 +44,18 @@ class GameEngine {
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {
-          await soundManager.playSound(soundFile); // Sound abspielen
+          await soundManager.playSound(soundFile, sessionType: "duck"); // Sound abspielen
           await soundManager.waitForSoundToFinish();
           ledRing.setIdle();
         } else {
-          print("Kein Sound gefunden.");
+          gameLogger.info("Kein Sound gefunden.");
         }
         break;
       case EngineState.gameRunning:
         game?.redButtonPressed();
         break;
     }
-    print('Red Button Pressed!');
+    gameLogger.info('Red Button Pressed!');
   }
 
   void greenButtonPressed() {
@@ -70,7 +68,7 @@ class GameEngine {
         game?.greenButtonPressed();
         break;
     }
-    print('Green Button Pressed!');
+    gameLogger.info('Green Button Pressed!');
   }
 
   void blueButtonPressed() {
@@ -82,7 +80,7 @@ class GameEngine {
         game?.blueButtonPressed();
         break;
     }
-    print('Blue Button Pressed!');
+    gameLogger.info('Blue Button Pressed!');
   }
 
   Future<String?> getRandomSoundFile() async {
@@ -99,23 +97,24 @@ class GameEngine {
             .toList();
 
     if (soundFiles.isEmpty) {
-      print("Keine Sounddateien gefunden!");
+      gameLogger.info("Keine Sounddateien gefunden!");
       return null; // Falls keine Dateien vorhanden sind
     }
 
     // Zufällige Datei auswählen
     String randomFile = soundFiles[random.nextInt(soundFiles.length)];
-    print(randomFile);
+    gameLogger.info(randomFile);
     return randomFile;
   }
 
+  // games 
   Games getRandomGame() {
     return Games.values[random.nextInt(Games.values.length)];
   }
 
   void playRandomGame() {
     currentGame = getRandomGame();
-    print("Next Game: $currentGame");
+    gameLogger.info("Next Game: $currentGame");
     switch (currentGame) {
       case Games.flunkyball:
         game = Flunkyball(soundManager, ledRing, idleGameEngine);
