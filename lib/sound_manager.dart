@@ -11,14 +11,14 @@ class SoundManager {
     'com.example.audio_control',
   );
 
-  void initState() {
+  void initState(String sessionType) {
     _audioPlayer.onPlayerComplete.listen((event) {
       gameLogger.info(
         "Audio playback complete. Now deactivating audio session.",
       );
       _deactivateAudioSession();
     });
-    _configureAudioSession();
+    _configureAudioSession(sessionType);
   }
 
   // Calls Swift code to setActive(false).
@@ -30,8 +30,32 @@ class SoundManager {
     }
   }
 
-  Future<void> _configureAudioSession() async {
-    await _audioPlayer.setAudioContext(
+  Future<void> _configureAudioSession(String sessionType) async {
+
+    if (sessionType == "silent") {
+      
+      print("Config silent");
+      await _audioPlayer.setAudioContext(
+      AudioContext(
+        iOS: AudioContextIOS(
+          category: AVAudioSessionCategory.playback,
+          options: {
+          
+          },
+        ),
+        android: AudioContextAndroid(
+          isSpeakerphoneOn: true,
+          stayAwake: true,
+          contentType: AndroidContentType.music,
+          usageType: AndroidUsageType.media,
+          audioFocus: AndroidAudioFocus.gainTransient,
+        ),
+      ),
+    );
+    
+    } else if (sessionType == "duck") {
+      print("Config duck");
+            await _audioPlayer.setAudioContext(
       AudioContext(
         iOS: AudioContextIOS(
           category: AVAudioSessionCategory.playback,
@@ -49,12 +73,16 @@ class SoundManager {
         ),
       ),
     );
+    }
+
+
   }
 
-  Future<void> playSound(String filename) async {
+  Future<void> playSound(String filename,{String sessionType="silent"}) async {
     // beep.mp3 must be declared in pubspec.yaml under assets:
     // assets/sounds/beep.mp3
     try {
+      await _configureAudioSession(sessionType);
       await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
       gameLogger.info(e);
@@ -64,6 +92,7 @@ class SoundManager {
   Future<void> stopSound() async {
     try {
       await _audioPlayer.stop();
+      await _deactivateAudioSession();
     } catch (e) {
       gameLogger.warning(e);
     }
@@ -92,6 +121,7 @@ class SoundManager {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.release);
       await _audioPlayer.stop();
+      await _deactivateAudioSession();
     } catch (e) {
       gameLogger.warning(e);
     }

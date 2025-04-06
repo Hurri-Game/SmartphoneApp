@@ -27,7 +27,7 @@ class _BeatBreakerState extends State<BeatBreaker> {
   void initState() {
     super.initState();
     soundManager = SoundManager();
-    soundManager.initState();
+    soundManager.initState("silent");
 
     // Initialize buttons first, without callbacks
 

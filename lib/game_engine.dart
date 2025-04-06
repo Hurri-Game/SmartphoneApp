@@ -18,6 +18,7 @@ enum Games {
 class GameEngine {
   GameEngine(this.soundManager, this.ledRing);
   final Random random = Random();
+
   SoundManager soundManager;
 
   var currentGame = Games.flunkyball;
@@ -42,7 +43,7 @@ class GameEngine {
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {
-          await soundManager.playSound(soundFile); // Sound abspielen
+          await soundManager.playSound(soundFile, sessionType: "duck"); // Sound abspielen
           await soundManager.waitForSoundToFinish();
           ledRing.setIdle();
         } else {
@@ -105,6 +106,7 @@ class GameEngine {
     return randomFile;
   }
 
+  // games 
   Games getRandomGame() {
     return Games.values[random.nextInt(Games.values.length)];
   }
