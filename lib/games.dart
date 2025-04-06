@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
+import 'package:flutter/material.dart';
 import 'package:hurrigame/utils/logger.dart';
 
 abstract class Game {
@@ -13,8 +16,11 @@ abstract class Game {
   void greenButtonPressed();
   void redButtonPressed();
   void blueButtonPressed();
-  void play();
-
+  
+  void play() {
+    ledRing?.pulse(Colors.orange);
+  }
+  
   void stop() {
     _isStopped = true;
     soundManager.stopSound();
@@ -34,13 +40,15 @@ class Flunkyball extends Game {
 
   @override
   void greenButtonPressed() {
+
     gameLogger.info('Flunkyball Green Button Pressed!');
-    stop();
+
   }
 
   @override
   void redButtonPressed() {
     gameLogger.info('Flunkyball Red Button Pressed!');
+    stop();
   }
 
   @override
@@ -50,6 +58,7 @@ class Flunkyball extends Game {
 
   @override
   void play() async {
+    super.play();
     await soundManager.playSound('sounds/games/flunky-song.mp3');
     gameLogger.info('Flunkyball is being played!');
     await soundManager.waitForSoundToFinish();
@@ -74,12 +83,12 @@ class RageCage extends Game {
   @override
   void greenButtonPressed() {
     gameLogger.info('RageCage Green Button Pressed!');
-    stop();
   }
 
   @override
   void redButtonPressed() {
     gameLogger.info('RageCage Red Button Pressed!');
+    stop();
   }
 
   @override
@@ -89,7 +98,10 @@ class RageCage extends Game {
 
   @override
   void play() async {
+
+
     gameLogger.info('RageCage is being played!');
+    super.play();
     await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
     await soundManager.waitForSoundToFinish();
     gameLogger.info('RageCage play before loop!');
@@ -104,5 +116,50 @@ class RageCage extends Game {
     super.stop();
     soundManager.stopLoop();
     gameLogger.info('RageCage stopped!');
+  }
+}
+
+class Roulette extends Game {
+  Roulette(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  bool runRoulette = false;
+  Random random = Random();
+
+  @override
+  void greenButtonPressed() {
+    print('Roulette Green Button Pressed!');
+    int waitTime = random.nextInt(5) + 5;
+    ledRing?.roulette(Colors.cyan);
+    // wait for waitTime seconds
+    Future.delayed(Duration(seconds: waitTime.toInt()), () {
+      if (!isStopped) {
+        ledRing?.freeze();
+        print('Roulette stopped!');
+      }
+    });
+  }
+
+  @override
+  void redButtonPressed() {
+    print('Roulette Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void blueButtonPressed() {
+    print('Roulette Blue Button Pressed!');
+  }
+
+  @override
+  void play() async {
+    super.play();
+    print('Roulette is being played!');
+    await soundManager.playSound('sounds/games/roulette.mp3');
+    await soundManager.waitForSoundToFinish();
+    print('Roulette stopped!');
   }
 }

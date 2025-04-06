@@ -12,6 +12,7 @@ enum EngineState { idle, gameRunning }
 enum Games {
   flunkyball,
   rageCage,
+  roulette,
   // beerPong,
 }
 
@@ -61,7 +62,7 @@ class GameEngine {
     switch (currentEngineState) {
       case EngineState.idle:
         playRandomGame();
-        ledRing.roulette(Colors.orange);
+        
         break;
       case EngineState.gameRunning:
         game?.greenButtonPressed();
@@ -120,6 +121,9 @@ class GameEngine {
         break;
       case Games.rageCage:
         game = RageCage(soundManager, ledRing, idleGameEngine);
+        break;
+      case Games.roulette:
+        game = Roulette(soundManager, ledRing, idleGameEngine);
         break;
       default:
         throw Exception("Game $currentGame is not implemented yet.");
