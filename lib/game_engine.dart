@@ -13,6 +13,7 @@ enum Games {
   flunkyball,
   rageCage,
   roulette,
+  farbenraten,
   // beerPong,
 }
 
@@ -44,7 +45,10 @@ class GameEngine {
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {
-          await soundManager.playSound(soundFile, sessionType: "duck"); // Sound abspielen
+          await soundManager.playSound(
+            soundFile,
+            sessionType: "duck",
+          ); // Sound abspielen
           await soundManager.waitForSoundToFinish();
           ledRing.setIdle();
         } else {
@@ -62,7 +66,7 @@ class GameEngine {
     switch (currentEngineState) {
       case EngineState.idle:
         playRandomGame();
-        
+
         break;
       case EngineState.gameRunning:
         game?.greenButtonPressed();
@@ -107,7 +111,7 @@ class GameEngine {
     return randomFile;
   }
 
-  // games 
+  // games
   Games getRandomGame() {
     return Games.values[random.nextInt(Games.values.length)];
   }
@@ -124,6 +128,9 @@ class GameEngine {
         break;
       case Games.roulette:
         game = Roulette(soundManager, ledRing, idleGameEngine);
+        break;
+      case Games.farbenraten:
+        game = FarbenRaten(soundManager, ledRing, idleGameEngine);
         break;
       default:
         throw Exception("Game $currentGame is not implemented yet.");

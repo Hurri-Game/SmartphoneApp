@@ -163,3 +163,36 @@ class Roulette extends Game {
     gameLogger.info('Roulette stopped!');
   }
 }
+
+class FarbenRaten extends Game {
+  FarbenRaten(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  @override
+  void greenButtonPressed() {
+    gameLogger.info('FarbenRaten Green Button Pressed!');
+  }
+
+  @override
+  void redButtonPressed() {
+    gameLogger.info('FarbenRaten Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void blueButtonPressed() {
+    gameLogger.info('FarbenRaten Blue Button Pressed!');
+  }
+
+  @override
+  void play() async {
+    super.play();
+    gameLogger.info('FarbenRaten is being played!');
+    await soundManager.playSound('sounds/games/farbenraten.mp3');
+    await soundManager.waitForSoundToFinish();
+    gameLogger.info('FarbenRaten stopped!');
+  }
+}
