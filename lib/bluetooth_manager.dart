@@ -77,7 +77,7 @@ class BluetoothManager {
     }
 
     await requestBluetoothPermissions();
-    await checkPermissions();
+    // await checkPermissions();
 
     bluetoothLogger.info("Starting scan...");
     // setup supscription
