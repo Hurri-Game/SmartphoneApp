@@ -16,11 +16,11 @@ abstract class Game {
   void greenButtonPressed();
   void redButtonPressed();
   void blueButtonPressed();
-  
+
   void play() {
     ledRing?.pulse(Colors.orange);
   }
-  
+
   void stop() {
     _isStopped = true;
     soundManager.stopSound();
@@ -40,9 +40,7 @@ class Flunkyball extends Game {
 
   @override
   void greenButtonPressed() {
-
     gameLogger.info('Flunkyball Green Button Pressed!');
-
   }
 
   @override
@@ -98,8 +96,6 @@ class RageCage extends Game {
 
   @override
   void play() async {
-
-
     gameLogger.info('RageCage is being played!');
     super.play();
     await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
@@ -161,5 +157,72 @@ class Roulette extends Game {
     await soundManager.playSound('sounds/games/roulette.mp3');
     await soundManager.waitForSoundToFinish();
     print('Roulette stopped!');
+  }
+}
+
+class GuessTheNumber extends Game {
+  GuessTheNumber(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  bool numberShown = true;
+  int numberToDisplay = 0;
+  Random random = Random();
+
+  @override
+  void greenButtonPressed() {
+    print('GuessTheNumber Green Button Pressed!');
+    if (numberShown) {
+      print('show random leds');
+      numberToDisplay = random.nextInt(60);
+      ledRing?.randomNumber(Colors.cyan, numberToDisplay);
+      numberShown = false;
+    } else {
+      print("hide leds");
+      ledRing?.setColor(Colors.green);
+      numberShown = true;
+      Future.delayed(const Duration(seconds: 2), () {
+        bluetoothLogger.info("Call out number");
+        soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
+      });
+    }
+    print('Random no. leds: $numberToDisplay');
+  }
+
+  @override
+  void redButtonPressed() {
+    print('GuessTheNumber Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void blueButtonPressed() {
+    print('GuessTheNumber Blue Button Pressed!');
+    if (numberShown) {
+      print('show random leds');
+      numberToDisplay = random.nextInt(60);
+      ledRing?.randomNumber(Colors.cyan, numberToDisplay);
+      numberShown = false;
+    } else {
+      print("hide leds");
+      ledRing?.setColor(Colors.blue);
+      numberShown = true;
+      Future.delayed(const Duration(seconds: 2), () {
+        bluetoothLogger.info("Call out number");
+        soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
+      });
+    }
+    print('Random no. leds: $numberToDisplay');
+  }
+
+  @override
+  void play() async {
+    super.play();
+    print('GuessTheNumber is being played!');
+    numberShown = true;
+    await soundManager.playSound('sounds/games/lichterraten.mp3');
+    await soundManager.waitForSoundToFinish();
   }
 }

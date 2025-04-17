@@ -62,6 +62,67 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/sounds/numbers/0.mp3
+    - assets/sounds/numbers/1.mp3
+    - assets/sounds/numbers/2.mp3
+    - assets/sounds/numbers/3.mp3
+    - assets/sounds/numbers/4.mp3
+    - assets/sounds/numbers/5.mp3
+    - assets/sounds/numbers/6.mp3
+    - assets/sounds/numbers/7.mp3
+    - assets/sounds/numbers/8.mp3
+    - assets/sounds/numbers/9.mp3
+    - assets/sounds/numbers/10.mp3
+    - assets/sounds/numbers/11.mp3
+    - assets/sounds/numbers/12.mp3
+    - assets/sounds/numbers/13.mp3
+    - assets/sounds/numbers/14.mp3
+    - assets/sounds/numbers/15.mp3
+    - assets/sounds/numbers/16.mp3
+    - assets/sounds/numbers/17.mp3
+    - assets/sounds/numbers/18.mp3
+    - assets/sounds/numbers/19.mp3
+    - assets/sounds/numbers/20.mp3
+    - assets/sounds/numbers/21.mp3
+    - assets/sounds/numbers/22.mp3
+    - assets/sounds/numbers/23.mp3
+    - assets/sounds/numbers/24.mp3
+    - assets/sounds/numbers/25.mp3
+    - assets/sounds/numbers/26.mp3
+    - assets/sounds/numbers/27.mp3
+    - assets/sounds/numbers/28.mp3
+    - assets/sounds/numbers/29.mp3
+    - assets/sounds/numbers/20.mp3
+    - assets/sounds/numbers/31.mp3
+    - assets/sounds/numbers/32.mp3
+    - assets/sounds/numbers/33.mp3
+    - assets/sounds/numbers/34.mp3
+    - assets/sounds/numbers/35.mp3
+    - assets/sounds/numbers/36.mp3
+    - assets/sounds/numbers/37.mp3
+    - assets/sounds/numbers/38.mp3
+    - assets/sounds/numbers/39.mp3
+    - assets/sounds/numbers/40.mp3
+    - assets/sounds/numbers/41.mp3
+    - assets/sounds/numbers/42.mp3
+    - assets/sounds/numbers/43.mp3
+    - assets/sounds/numbers/44.mp3
+    - assets/sounds/numbers/45.mp3
+    - assets/sounds/numbers/46.mp3
+    - assets/sounds/numbers/47.mp3
+    - assets/sounds/numbers/48.mp3
+    - assets/sounds/numbers/49.mp3
+    - assets/sounds/numbers/50.mp3
+    - assets/sounds/numbers/51.mp3
+    - assets/sounds/numbers/52.mp3
+    - assets/sounds/numbers/53.mp3
+    - assets/sounds/numbers/54.mp3
+    - assets/sounds/numbers/55.mp3
+    - assets/sounds/numbers/56.mp3
+    - assets/sounds/numbers/57.mp3
+    - assets/sounds/numbers/58.mp3
+    - assets/sounds/numbers/59.mp3
+    - assets/sounds/numbers/60.mp3
     - assets/sounds/bullshit/Bauer Hermann best of2.mp3
     - assets/sounds/bullshit/dinosaur_virgins.mp3
     - assets/sounds/bullshit/HomerBierBett.mp3
@@ -204,6 +265,7 @@ flutter:
     - assets/sounds/games/rage_im_kaefig.mp3
     - assets/sounds/games/GoranBregovic_GasGas.mp3
     - assets/sounds/games/roulette.mp3
+    - assets/sounds/games/lichterraten.mp3
 
 
   # To add assets to your application, add an assets section, like this:
