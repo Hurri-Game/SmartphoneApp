@@ -75,13 +75,13 @@ class GameEngine {
     gameLogger.info('Green Button Pressed!');
   }
 
-  void blueButtonPressed() {
+  void orangeButtonPressed() {
     switch (currentEngineState) {
       case EngineState.idle:
         ledRing.setColor(Colors.blue);
         break;
       case EngineState.gameRunning:
-        game?.blueButtonPressed();
+        game?.orangeButtonPressed();
         break;
     }
     gameLogger.info('Blue Button Pressed!');

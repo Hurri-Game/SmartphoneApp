@@ -3,18 +3,18 @@ import 'package:flutter/material.dart';
 
 List<ActionButton> buttons = [
   ActionButton(
-    'RedActionButton',
-    Colors.red,
-    () {}, // temporary empty callback
-  ),
-  ActionButton(
     'GreenActionButton',
     Colors.green,
     () {}, // temporary empty callback
   ),
   ActionButton(
-    'BlueActionButton',
-    Colors.blue,
+    'OrangeActionButton',
+    Colors.orange,
+    () {}, // temporary empty callback
+  ),
+  ActionButton(
+    'RedActionButton',
+    Colors.red,
     () {}, // temporary empty callback
   ),
 ];

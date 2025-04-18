@@ -41,9 +41,9 @@ class _BeatBreakerState extends State<BeatBreaker> {
     gameEngine = GameEngine(soundManager, ledRing);
 
     ledRing.setBluetoothManager(bluetoothManager);
-    buttons[0].setOnTapFunc(gameEngine.redButtonPressed);
-    buttons[1].setOnTapFunc(gameEngine.greenButtonPressed);
-    buttons[2].setOnTapFunc(gameEngine.blueButtonPressed);
+    buttons[0].setOnTapFunc(gameEngine.greenButtonPressed);
+    buttons[1].setOnTapFunc(gameEngine.orangeButtonPressed);
+    buttons[2].setOnTapFunc(gameEngine.redButtonPressed);
 
     bluetoothManager.startScan();
   }

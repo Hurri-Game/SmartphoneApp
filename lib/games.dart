@@ -15,7 +15,7 @@ abstract class Game {
 
   void greenButtonPressed();
   void redButtonPressed();
-  void blueButtonPressed();
+  void orangeButtonPressed();
 
   void play() {
     ledRing?.pulse(Colors.orange);
@@ -50,7 +50,7 @@ class Flunkyball extends Game {
   }
 
   @override
-  void blueButtonPressed() {
+  void orangeButtonPressed() {
     gameLogger.info('Flunkyball Blue Button Pressed!');
   }
 
@@ -90,7 +90,7 @@ class RageCage extends Game {
   }
 
   @override
-  void blueButtonPressed() {
+  void orangeButtonPressed() {
     gameLogger.info('RageCage Blue Button Pressed!');
   }
 
@@ -146,7 +146,7 @@ class Roulette extends Game {
   }
 
   @override
-  void blueButtonPressed() {
+  void orangeButtonPressed() {
     print('Roulette Blue Button Pressed!');
   }
 
@@ -198,7 +198,7 @@ class GuessTheNumber extends Game {
   }
 
   @override
-  void blueButtonPressed() {
+  void orangeButtonPressed() {
     print('GuessTheNumber Blue Button Pressed!');
     if (numberShown) {
       print('show random leds');
