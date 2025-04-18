@@ -18,7 +18,7 @@ abstract class Game {
   void orangeButtonPressed();
 
   void play() {
-    ledRing?.pulse(Colors.orange);
+    ledRing?.pulse(Colors.green);
   }
 
   void stop() {
@@ -270,5 +270,34 @@ class ChooseSide extends Game {
     print('ChooseSide is being played!');
     await soundManager.playSound('sounds/games/chooseside.mp3');
     await soundManager.waitForSoundToFinish();
+  }
+}
+
+class Challenge extends Game {
+  Challenge(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  @override
+  void greenButtonPressed() {
+    print('Challenge Green Button Pressed!');
+  }
+
+  @override
+  void redButtonPressed() {
+    print('Challenge Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void orangeButtonPressed() {
+    print('Challenge Orange Button Pressed!');
+  }
+
+  @override
+  void play() {
+    ledRing?.pulse(Colors.orange);
   }
 }
