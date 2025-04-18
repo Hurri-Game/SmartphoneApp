@@ -10,6 +10,7 @@ import 'package:hurrigame/utils/logger.dart';
 enum EngineState { idle, gameRunning }
 
 enum Games {
+  chooseSide,
   guessTheNumber,
   flunkyball,
   rageCage,
@@ -132,12 +133,15 @@ class GameEngine {
       case Games.guessTheNumber:
         game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
         break;
+      case Games.chooseSide:
+        game = ChooseSide(soundManager, ledRing, idleGameEngine);
+        break;
       default:
         throw Exception("Game $currentGame is not implemented yet.");
     }
 
     currentEngineState = EngineState.gameRunning;
-    //game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
+    //game = ChooseSide(soundManager, ledRing, idleGameEngine);  // only for testing always the same game
     game?.play();
   }
 

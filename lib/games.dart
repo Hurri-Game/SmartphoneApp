@@ -226,3 +226,49 @@ class GuessTheNumber extends Game {
     await soundManager.waitForSoundToFinish();
   }
 }
+
+class ChooseSide extends Game {
+  ChooseSide(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  Random random = Random();
+
+  @override
+  void greenButtonPressed() {
+    print('ChooseSide Green Button Pressed!');
+
+    Random random = Random();
+    int waitTime = random.nextInt(5) + 5;
+
+    ledRing?.setIdle();
+    ledRing?.shuffleSection(Colors.white);
+    Future.delayed(Duration(seconds: waitTime), () {
+      ledRing?.setSection(
+        Colors.red,
+        RingSection.values[random.nextInt(RingSection.values.length)],
+      );
+    });
+  }
+
+  @override
+  void redButtonPressed() {
+    print('ChooseSide Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void orangeButtonPressed() {
+    print('ChooseSide Orange Button Pressed!');
+  }
+
+  @override
+  void play() async {
+    super.play();
+    print('ChooseSide is being played!');
+    await soundManager.playSound('sounds/games/chooseside.mp3');
+    await soundManager.waitForSoundToFinish();
+  }
+}

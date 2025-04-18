@@ -266,6 +266,7 @@ flutter:
     - assets/sounds/games/GoranBregovic_GasGas.mp3
     - assets/sounds/games/roulette.mp3
     - assets/sounds/games/lichterraten.mp3
+    - assets/sounds/games/chooseside.mp3
 
 
   # To add assets to your application, add an assets section, like this:
