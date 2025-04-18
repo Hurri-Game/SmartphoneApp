@@ -10,6 +10,7 @@ import 'package:hurrigame/utils/logger.dart';
 enum EngineState { idle, gameRunning }
 
 enum Games {
+  guessTheNumber,
   flunkyball,
   rageCage,
   roulette,
@@ -44,7 +45,10 @@ class GameEngine {
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
         if (soundFile != null) {
-          await soundManager.playSound(soundFile, sessionType: "duck"); // Sound abspielen
+          await soundManager.playSound(
+            soundFile,
+            sessionType: "duck",
+          ); // Sound abspielen
           await soundManager.waitForSoundToFinish();
           ledRing.setIdle();
         } else {
@@ -62,7 +66,7 @@ class GameEngine {
     switch (currentEngineState) {
       case EngineState.idle:
         playRandomGame();
-        
+
         break;
       case EngineState.gameRunning:
         game?.greenButtonPressed();
@@ -71,13 +75,13 @@ class GameEngine {
     gameLogger.info('Green Button Pressed!');
   }
 
-  void blueButtonPressed() {
+  void orangeButtonPressed() {
     switch (currentEngineState) {
       case EngineState.idle:
         ledRing.setColor(Colors.blue);
         break;
       case EngineState.gameRunning:
-        game?.blueButtonPressed();
+        game?.orangeButtonPressed();
         break;
     }
     gameLogger.info('Blue Button Pressed!');
@@ -107,7 +111,7 @@ class GameEngine {
     return randomFile;
   }
 
-  // games 
+  // games
   Games getRandomGame() {
     return Games.values[random.nextInt(Games.values.length)];
   }
@@ -125,11 +129,15 @@ class GameEngine {
       case Games.roulette:
         game = Roulette(soundManager, ledRing, idleGameEngine);
         break;
+      case Games.guessTheNumber:
+        game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
+        break;
       default:
         throw Exception("Game $currentGame is not implemented yet.");
     }
 
     currentEngineState = EngineState.gameRunning;
+    //game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
     game?.play();
   }
 
