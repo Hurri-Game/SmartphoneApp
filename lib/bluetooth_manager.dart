@@ -175,7 +175,6 @@ class BluetoothManager {
       );
 
       if (!_connecting) {
-        /*
         // needed to have the app open all the time on iOS (to be checked on android)
         FlutterBluePlus.startScan();
         // Resart scan periodically to prevent Android scan throttling
@@ -184,7 +183,7 @@ class BluetoothManager {
           print("delayed start scan");
           startScan();
         });
-        */
+
         if (FlutterBluePlus.isScanning == true) {
           bluetoothLogger.warning("Already scanning...");
         } else {
