@@ -4,6 +4,7 @@ import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
 import 'package:flutter/material.dart';
 import 'package:hurrigame/utils/logger.dart';
+import 'package:hurrigame/utils/csv_colors.dart';
 
 abstract class Game {
   Game(this.soundManager, this.ledRing, this.stopCallback);
@@ -160,7 +161,6 @@ class Roulette extends Game {
     gameLogger.info('Roulette is being played!');
     await soundManager.playSound('sounds/games/roulette.mp3');
     await soundManager.waitForSoundToFinish();
-    gameLogger.info('Roulette stopped!');
   }
 }
 
@@ -171,9 +171,15 @@ class FarbenRaten extends Game {
     void Function() stopCallback,
   ) : super(soundManager, ledRing, stopCallback);
 
+  Random random = Random();
+  late final List<ColorEntry> colorEntries;
+
   @override
-  void greenButtonPressed() {
+  Future<void> greenButtonPressed() async {
     gameLogger.info('FarbenRaten Green Button Pressed!');
+    ColorEntry color = getRandomColor();
+    ledRing?.setColor(color.color);
+    gameLogger.info('Random Color: $color');
   }
 
   @override
@@ -187,12 +193,25 @@ class FarbenRaten extends Game {
     gameLogger.info('FarbenRaten Blue Button Pressed!');
   }
 
-  @override
-  void play() async {
-    super.play();
-    gameLogger.info('FarbenRaten is being played!');
-    await soundManager.playSound('sounds/games/farbenraten.mp3');
-    await soundManager.waitForSoundToFinish();
-    gameLogger.info('FarbenRaten stopped!');
+@override
+Future<void> play() async {
+  super.play();
+  gameLogger.info('FarbenRaten is being played!');
+
+  colorEntries = await loadColorEntries('assets/color_insults/colors.csv');
+  gameLogger.info("Loaded ${colorEntries.length} color entries");
+
+  await soundManager.playSound('sounds/games/farbenraten.mp3');
+  await soundManager.waitForSoundToFinish();
+}
+
+
+
+  ColorEntry getRandomColor() {
+    int randomIndex = random.nextInt(colorEntries.length);
+    gameLogger.info('Random Index: $randomIndex');
+    gameLogger.info("length: ${colorEntries.length}");
+    return colorEntries[randomIndex];
   }
+
 }
