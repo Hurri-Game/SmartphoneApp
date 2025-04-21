@@ -118,6 +118,7 @@ class GameEngine {
 
   void playRandomGame() {
     currentGame = getRandomGame();
+    currentGame = Games.farbenraten;
     gameLogger.info("Next Game: $currentGame");
     switch (currentGame) {
       case Games.flunkyball:
@@ -133,7 +134,7 @@ class GameEngine {
         game = FarbenRaten(soundManager, ledRing, idleGameEngine);
         break;
       default:
-        throw Exception("Game $currentGame is not implemented yet.");
+        gameLogger.warning("Game $currentGame is not implemented yet.");
     }
 
     currentEngineState = EngineState.gameRunning;
