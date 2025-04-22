@@ -15,29 +15,48 @@ class SettingsManager {
 
   Future<void> initialize() async {
     gameLogger.info('init settings manager');
-    // Load all bullshit sounds
+    final prefs = await SharedPreferences.getInstance();
+
+    // Load games
+    final savedGames = prefs.getStringList('enabledGames');
+    if (savedGames != null) {
+      _enabledGames
+        ..clear()
+        ..addAll(
+          savedGames.map((g) => Games.values.firstWhere((e) => e.name == g)),
+        );
+    }
+
+    // Load challenges
+    final savedChallenges = prefs.getStringList('enabledChallenges');
+    if (savedChallenges != null) {
+      _enabledChallenges
+        ..clear()
+        ..addAll(
+          savedChallenges.map(
+            (c) => Challenges.values.firstWhere((e) => e.name == c),
+          ),
+        );
+    }
+
+    // Load bullshit sounds from manifest
     final String assetManifest = await rootBundle.loadString(
       'AssetManifest.json',
     );
     final Map<String, dynamic> manifest = json.decode(assetManifest);
-
-    // Only add new sounds if they're not already in the set
     final allBullshitSounds =
         manifest.keys
             .where((String key) => key.startsWith('assets/sounds/bullshit/'))
             .map((String path) => path.replaceFirst('assets/', ''))
             .toSet();
 
-    // If _enabledBullshitSounds is empty, initialize with all sounds
-    if (_enabledBullshitSounds.isEmpty) {
+    final savedSounds = prefs.getStringList('enabledBullshitSounds');
+
+    if (savedSounds != null) {
+      _enabledBullshitSounds = savedSounds.toSet();
+    } else {
       gameLogger.info('enable all bullshit sounds');
       _enabledBullshitSounds = allBullshitSounds;
-    } else {
-      // Otherwise, only add new sounds that aren't already in the set
-      gameLogger.info('enable enabled bullshit sounds');
-      //_enabledBullshitSounds.addAll(
-      //  allBullshitSounds.difference(_enabledBullshitSounds),
-      //);
     }
   }
 
@@ -53,6 +72,7 @@ class SettingsManager {
     } else {
       _enabledGames.add(game);
     }
+    savePrefs(_enabledGames, _enabledChallenges, _enabledBullshitSounds);
   }
 
   void toggleChallenge(Challenges challenge) {
@@ -61,6 +81,7 @@ class SettingsManager {
     } else {
       _enabledChallenges.add(challenge);
     }
+    savePrefs(_enabledGames, _enabledChallenges, _enabledBullshitSounds);
   }
 
   void toggleBullshitSound(String soundFile) {
@@ -69,6 +90,7 @@ class SettingsManager {
     } else {
       _enabledBullshitSounds.add(soundFile);
     }
+    savePrefs(_enabledGames, _enabledChallenges, _enabledBullshitSounds);
   }
 
   Future<void> savePrefs(
@@ -89,26 +111,6 @@ class SettingsManager {
     );
 
     await prefs.setStringList('enabledBullshitSounds', sounds.toList());
-  }
-
-  Future<void> loadPrefs() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    final gameNames = prefs.getStringList('enabledGames') ?? [];
-    final challengeNames = prefs.getStringList('enabledChallenges') ?? [];
-    final soundList = prefs.getStringList('enabledBullshitSounds') ?? [];
-
-    _enabledGames =
-        gameNames
-            .map((name) => Games.values.firstWhere((g) => g.name == name))
-            .toSet();
-
-    _enabledChallenges =
-        challengeNames
-            .map((name) => Challenges.values.firstWhere((c) => c.name == name))
-            .toSet();
-
-    _enabledBullshitSounds = soundList.toSet();
   }
 
   List<Games> getEnabledGames() => _enabledGames.toList();
