@@ -2,6 +2,7 @@ import 'package:hurrigame/game_engine.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:hurrigame/utils/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsManager {
   static final SettingsManager _instance = SettingsManager._internal();
@@ -68,6 +69,46 @@ class SettingsManager {
     } else {
       _enabledBullshitSounds.add(soundFile);
     }
+  }
+
+  Future<void> savePrefs(
+    Set<Games> games,
+    Set<Challenges> challenges,
+    Set<String> sounds,
+  ) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setStringList(
+      'enabledGames',
+      games.map((g) => g.name).toList(),
+    );
+
+    await prefs.setStringList(
+      'enabledChallenges',
+      challenges.map((c) => c.name).toList(),
+    );
+
+    await prefs.setStringList('enabledBullshitSounds', sounds.toList());
+  }
+
+  Future<void> loadPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final gameNames = prefs.getStringList('enabledGames') ?? [];
+    final challengeNames = prefs.getStringList('enabledChallenges') ?? [];
+    final soundList = prefs.getStringList('enabledBullshitSounds') ?? [];
+
+    _enabledGames =
+        gameNames
+            .map((name) => Games.values.firstWhere((g) => g.name == name))
+            .toSet();
+
+    _enabledChallenges =
+        challengeNames
+            .map((name) => Challenges.values.firstWhere((c) => c.name == name))
+            .toSet();
+
+    _enabledBullshitSounds = soundList.toSet();
   }
 
   List<Games> getEnabledGames() => _enabledGames.toList();
