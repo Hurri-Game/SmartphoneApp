@@ -1,12 +1,10 @@
 import 'package:hurrigame/led_ring.dart';
-import 'package:flutter/material.dart';
 import 'package:hurrigame/sound_manager.dart';
-import 'dart:convert';
 import 'dart:math';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:hurrigame/games.dart';
 import 'package:hurrigame/challenges.dart';
 import 'package:hurrigame/utils/logger.dart';
+import 'package:hurrigame/settings_manager.dart';
 
 enum EngineState { idle, gameRunning }
 
@@ -106,24 +104,15 @@ class GameEngine {
   }
 
   Future<String?> getRandomSoundFile() async {
-    final String assetManifest = await rootBundle.loadString(
-      'AssetManifest.json',
-    );
-    final Map<String, dynamic> manifest = json.decode(assetManifest);
-
-    // Alle Dateien unter 'assets/sounds/bullshit/' filtern
-    List<String> soundFiles =
-        manifest.keys
-            .where((String key) => key.startsWith('assets/sounds/bullshit/'))
-            .map((String path) => path.replaceFirst('assets/', ''))
-            .toList();
+    // Get all enabled bullshit sounds
+    List<String> soundFiles = SettingsManager().getEnabledBullshitSounds();
 
     if (soundFiles.isEmpty) {
-      gameLogger.info("Keine Sounddateien gefunden!");
-      return null; // Falls keine Dateien vorhanden sind
+      gameLogger.info("No bullshit sounds enabled!");
+      return null;
     }
 
-    // Zufällige Datei auswählen
+    // Select a random enabled sound file
     String randomFile = soundFiles[random.nextInt(soundFiles.length)];
     gameLogger.info(randomFile);
     return randomFile;
@@ -131,7 +120,11 @@ class GameEngine {
 
   // games
   Games getRandomGame() {
-    return Games.values[random.nextInt(Games.values.length)];
+    final enabledGames = SettingsManager().getEnabledGames();
+    if (enabledGames.isEmpty) {
+      throw Exception("No games enabled");
+    }
+    return enabledGames[random.nextInt(enabledGames.length)];
   }
 
   void playRandomGame() {
@@ -161,9 +154,13 @@ class GameEngine {
     game?.play();
   }
 
-  // games
+  // challenges
   Challenges getRandomChallenge() {
-    return Challenges.values[random.nextInt(Challenges.values.length)];
+    final enabledChallenges = SettingsManager().getEnabledChallenges();
+    if (enabledChallenges.isEmpty) {
+      throw Exception("No challenges enabled");
+    }
+    return enabledChallenges[random.nextInt(enabledChallenges.length)];
   }
 
   void playRandomChallenge() {
@@ -224,5 +221,49 @@ class GameEngine {
 
   void idleGameEngine() {
     currentEngineState = EngineState.idle;
+  }
+
+  static String getGameDisplayName(Games game) {
+    switch (game) {
+      case Games.chooseSide:
+        return "Choose Side";
+      case Games.guessTheNumber:
+        return "Guess the Number";
+      case Games.flunkyball:
+        return "Flunkyball";
+      case Games.rageCage:
+        return "Rage Cage";
+      case Games.roulette:
+        return "Roulette";
+      default:
+        return game.toString().split('.').last;
+    }
+  }
+
+  static String getChallengeDisplayName(Challenges challenge) {
+    switch (challenge) {
+      case Challenges.armPress:
+        return "Arm Press";
+      case Challenges.thumbCatching:
+        return "Thumb Catching";
+      case Challenges.canThrowing:
+        return "Can Throwing";
+      case Challenges.highJump:
+        return "High Jump";
+      case Challenges.bowling:
+        return "Bowling";
+      case Challenges.holdYourBreath:
+        return "Hold Your Breath";
+      case Challenges.measurePromille:
+        return "Measure Promille";
+      case Challenges.quiz:
+        return "Quiz";
+      case Challenges.rockPaperScissors:
+        return "Rock Paper Scissors";
+      case Challenges.race:
+        return "Race";
+      default:
+        return challenge.toString().split('.').last;
+    }
   }
 }
