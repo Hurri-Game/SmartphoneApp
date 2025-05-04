@@ -23,12 +23,13 @@ class _BeatBreakerState extends State<BeatBreaker> {
   late GameEngine gameEngine;
   late LedRing ledRing;
 
+
   @override
   void initState() {
     super.initState();
     soundManager = SoundManager();
     soundManager.initState("silent");
-
+    
     // Initialize buttons first, without callbacks
 
     ledRing = LedRing(

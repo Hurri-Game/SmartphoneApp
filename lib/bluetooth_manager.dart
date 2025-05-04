@@ -123,7 +123,7 @@ class BluetoothManager {
         return;
       }
 
-      bluetoothLogger.info("Starting scan...");
+      bluetoothLogger.warning("Starting scan...");
 
       // Add a small delay before starting the scan, otherwise no devices are found
       await Future.delayed(const Duration(milliseconds: 500));
@@ -144,6 +144,7 @@ class BluetoothManager {
               // Action Buttons
               for (var button in buttons) {
                 if (button.name == deviceName) {
+                  bluetoothLogger.info("found a button");
                   // Check cooldown period
                   final lastDetection = _lastDetectionTimes[deviceName];
                   final now = DateTime.now();
@@ -173,23 +174,28 @@ class BluetoothManager {
           });
         },
       );
+    
+      bluetoothLogger.warning("is connecting: $_connecting");
 
       if (!_connecting) {
         // needed to have the app open all the time on iOS (to be checked on android)
-        FlutterBluePlus.startScan();
-        // Resart scan periodically to prevent Android scan throttling
-        Future.delayed(const Duration(seconds: 1), () async {
-          await stopScan();
-          print("delayed start scan");
-          startScan();
-        });
-
+        FlutterBluePlus.startScan(oneByOne: true, continuousUpdates: true); //FlutterBluePlus.startScan(); --> periodically starting new scans seems to be not the solution ! 
+        bluetoothLogger.info("Starting ble scan");
+        
+        // Resart scan periodically to prevent Android scan throttling --> Not needed with  continuousUpdates: true  
+        // Future.delayed(const Duration(seconds: 1), () async {
+        //   await stopScan();
+        //   print("delayed start scan");
+        //   startScan();
+        // });
+        
         if (FlutterBluePlus.isScanning == true) {
           bluetoothLogger.warning("Already scanning...");
-        } else {
-          bluetoothLogger.info("Starting initial scan...");
-          FlutterBluePlus.startScan(oneByOne: true, continuousUpdates: true);
-        }
+        } 
+        // else {
+        //   bluetoothLogger.info("Starting initial scan...");
+        //   FlutterBluePlus.startScan(oneByOne: true, continuousUpdates: true);
+        // }
       }
     } catch (e, stackTrace) {
       bluetoothLogger.severe("Error starting scan", e, stackTrace);
@@ -201,10 +207,12 @@ class BluetoothManager {
     }
   }
 
+
   Future<void> stopScan() async {
     if (_scanSubscription != null) {
       bluetoothLogger.info("Cancle subscription");
       FlutterBluePlus.cancelWhenScanComplete(_scanSubscription);
+      
       await _scanSubscription!.cancel();
       _scanSubscription = null;
     }
