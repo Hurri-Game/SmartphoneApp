@@ -403,6 +403,7 @@ flutter:
     - assets/sounds/color_sounds/mittleres_blau.mp3 
     - assets/sounds/games/lichterraten.mp3
     - assets/sounds/games/chooseside.mp3
+    - assets/sounds/games/olaf-bierpong.mp3
     - assets/sounds/challenges/ArmPress.mp3
     - assets/sounds/challenges/Bowling.mp3
     - assets/sounds/challenges/CanThrowing.mp3

@@ -376,3 +376,43 @@ class Challenge extends Game {
     ledRing?.pulse(Colors.orange);
   }
 }
+
+class Beerpong extends Game {
+  Beerpong(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  @override
+  void greenButtonPressed() {
+    gameLogger.info('Beerpong Green Button Pressed!');
+  }
+
+  @override
+  void redButtonPressed() {
+    gameLogger.info('Beerpong Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void orangeButtonPressed() {
+    gameLogger.info('Beerpong Orange Button Pressed!');
+  }
+
+  @override
+  void play() async {
+    super.play();
+    await soundManager.playSound('sounds/games/olaf-bierpong.mp3');
+    gameLogger.info('Beerpong is being played!');
+    await soundManager.waitForSoundToFinish();
+    super.stop();
+    gameLogger.info('Beerpong stopped!');
+  }
+
+  @override
+  void stop() {
+    super.stop();
+    gameLogger.info('Beerpong stopped!');
+  }
+}
