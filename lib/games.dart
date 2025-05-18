@@ -180,6 +180,7 @@ class FarbenRaten extends Game {
     ColorEntry color = getRandomColor();
     ledRing?.setColor(color.color);
     gameLogger.info('Random Color: $color');
+    await soundManager.playSound('sounds/color_sounds/${color.name}.mp3');
   }
 
   @override
