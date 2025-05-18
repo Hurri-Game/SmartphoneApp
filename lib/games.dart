@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:hurrigame/sound_manager.dart';
@@ -173,6 +174,7 @@ class FarbenRaten extends Game {
 
   Random random = Random();
   late final List<ColorEntry> colorEntries;
+  Completer<void>? _blueButtonCompleter;
 
   @override
   Future<void> greenButtonPressed() async {
@@ -180,6 +182,14 @@ class FarbenRaten extends Game {
     ColorEntry color = getRandomColor();
     ledRing?.setColor(color.color);
     gameLogger.info('Random Color: $color');
+
+    // Wait for the blue button to be pressed
+    _blueButtonCompleter = Completer<void>();
+    await _blueButtonCompleter?.future;
+    _blueButtonCompleter = null;
+    // wait for 5 seconds
+    ledRing?.pulse(color.color);
+    await Future.delayed(const Duration(seconds: 3));
     await soundManager.playSound('sounds/color_sounds/${color.name}.mp3');
   }
 
@@ -192,6 +202,7 @@ class FarbenRaten extends Game {
   @override
   void blueButtonPressed() {
     gameLogger.info('FarbenRaten Blue Button Pressed!');
+    _blueButtonCompleter?.complete();
   }
 
 @override
