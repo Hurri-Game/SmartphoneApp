@@ -240,6 +240,8 @@ class GameEngine {
         return "Rage Cage";
       case Games.roulette:
         return "Roulette";
+      case Games.farbenraten:
+        return "Farbenraten";
       default:
         return game.toString().split('.').last;
     }
