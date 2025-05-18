@@ -23,8 +23,8 @@ class GameEngine {
 
   SoundManager soundManager;
 
-  var currentGame = Games.flunkyball;
-  var currentEngineState = EngineState.idle;
+  Games? currentGame;
+  EngineState currentEngineState = EngineState.idle;
   Game? game;
 
   LedRing ledRing;
