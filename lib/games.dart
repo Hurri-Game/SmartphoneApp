@@ -169,23 +169,26 @@ class FarbenRaten extends Game {
   ) : super(soundManager, ledRing, stopCallback);
     Random random = Random();
   late final List<ColorEntry> colorEntries;
-  Completer<void>? _blueButtonCompleter;
+  bool showColor = true;
+  ColorEntry currentColor = ColorEntry(name: 'white', color: Colors.white);
 
   @override
   Future<void> greenButtonPressed() async {
     gameLogger.info('FarbenRaten Green Button Pressed!');
-    ColorEntry color = getRandomColor();
-    ledRing?.setColor(color.color);
-    gameLogger.info('Random Color: $color');
-
-    // Wait for the blue button to be pressed
-    _blueButtonCompleter = Completer<void>();
-    await _blueButtonCompleter?.future;
-    _blueButtonCompleter = null;
-    // wait for 5 seconds
-    ledRing?.pulse(color.color);
-    await Future.delayed(const Duration(seconds: 3));
-    await soundManager.playSound('sounds/color_sounds/${color.name}.mp3');
+    if (showColor) {
+      gameLogger.info('show random color');
+      currentColor = getRandomColor();
+      ledRing?.setColor(currentColor.color);
+      gameLogger.info('Random Color: $currentColor');
+      showColor = false;
+    } else {
+      gameLogger.info("hide color");
+      ledRing?.pulse(Colors.green);
+      await Future.delayed(const Duration(seconds: 3));
+      ledRing?.setColor(currentColor.color);
+      await soundManager.playSound('sounds/color_sounds/${currentColor.name}.mp3');
+      showColor = true;
+    }
     }
 
   @override
@@ -195,9 +198,22 @@ class FarbenRaten extends Game {
   }
 
   @override
-   void orangeButtonPressed() {
-    gameLogger.info('FarbenRaten Blue Button Pressed!');
-    _blueButtonCompleter?.complete();
+   void orangeButtonPressed() async {
+    gameLogger.info('FarbenRaten Orange Button Pressed!');
+    if (showColor) {
+      gameLogger.info('show random color');
+      currentColor = getRandomColor();
+      ledRing?.setColor(currentColor.color);
+      gameLogger.info('Random Color: $currentColor');
+      showColor = false;
+    } else {
+      gameLogger.info("hide color");
+      ledRing?.pulse(Colors.orange);
+      await Future.delayed(const Duration(seconds: 3));
+      ledRing?.setColor(currentColor.color);
+      await soundManager.playSound('sounds/color_sounds/${currentColor.name}.mp3');
+      showColor = true;
+    }
   }
 
 @override
