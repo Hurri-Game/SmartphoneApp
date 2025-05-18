@@ -118,7 +118,6 @@ class GameEngine {
 
   void playRandomGame() {
     currentGame = getRandomGame();
-    currentGame = Games.farbenraten;
     gameLogger.info("Next Game: $currentGame");
     switch (currentGame) {
       case Games.flunkyball:
