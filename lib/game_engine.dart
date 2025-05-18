@@ -14,6 +14,7 @@ enum Games {
   flunkyball,
   rageCage,
   roulette,
+  farbenraten,
   // beerPong,
 }
 
@@ -38,9 +39,10 @@ class GameEngine {
 
   SoundManager soundManager;
 
-  var currentGame = Games.flunkyball;
+  Games? currentGame;
+  EngineState currentEngineState = EngineState.idle;
   var currentChallenge = Challenges.armPress;
-  var currentEngineState = EngineState.idle;
+
   Game? game;
 
   LedRing ledRing;
@@ -140,6 +142,9 @@ class GameEngine {
       case Games.roulette:
         game = Roulette(soundManager, ledRing, idleGameEngine);
         break;
+      case Games.farbenraten:
+        game = FarbenRaten(soundManager, ledRing, idleGameEngine);
+        break;
       case Games.guessTheNumber:
         game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
         break;
@@ -147,7 +152,7 @@ class GameEngine {
         game = ChooseSide(soundManager, ledRing, idleGameEngine);
         break;
       default:
-        throw Exception("Game $currentGame is not implemented yet.");
+        gameLogger.warning("Game $currentGame is not implemented yet.");
     }
     currentEngineState = EngineState.gameRunning;
     //game = ChooseSide(soundManager, ledRing, idleGameEngine);  // only for testing always the same game

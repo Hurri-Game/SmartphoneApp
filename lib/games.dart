@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
 import 'package:flutter/material.dart';
 import 'package:hurrigame/utils/logger.dart';
+import 'package:hurrigame/utils/csv_colors.dart';
 
 abstract class Game {
   Game(this.soundManager, this.ledRing, this.stopCallback);
@@ -127,36 +129,94 @@ class Roulette extends Game {
 
   @override
   void greenButtonPressed() {
-    print('Roulette Green Button Pressed!');
+    gameLogger.info('Roulette Green Button Pressed!');
     int waitTime = random.nextInt(5) + 5;
     ledRing?.roulette(Colors.cyan);
     // wait for waitTime seconds
     Future.delayed(Duration(seconds: waitTime.toInt()), () {
       if (!isStopped) {
         ledRing?.freeze();
-        print('Roulette stopped!');
+        gameLogger.info('Roulette stopped!');
       }
     });
   }
 
   @override
   void redButtonPressed() {
-    print('Roulette Red Button Pressed!');
+    gameLogger.info('Roulette Red Button Pressed!');
     stop();
   }
 
   @override
   void orangeButtonPressed() {
-    print('Roulette Blue Button Pressed!');
+    gameLogger.info('Roulette Blue Button Pressed!');
   }
 
   @override
   void play() async {
     super.play();
-    print('Roulette is being played!');
+    gameLogger.info('Roulette is being played!');
     await soundManager.playSound('sounds/games/roulette.mp3');
     await soundManager.waitForSoundToFinish();
-    print('Roulette stopped!');
+  }
+}
+
+class FarbenRaten extends Game {
+  FarbenRaten(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+    Random random = Random();
+  late final List<ColorEntry> colorEntries;
+  Completer<void>? _blueButtonCompleter;
+
+  @override
+  Future<void> greenButtonPressed() async {
+    gameLogger.info('FarbenRaten Green Button Pressed!');
+    ColorEntry color = getRandomColor();
+    ledRing?.setColor(color.color);
+    gameLogger.info('Random Color: $color');
+
+    // Wait for the blue button to be pressed
+    _blueButtonCompleter = Completer<void>();
+    await _blueButtonCompleter?.future;
+    _blueButtonCompleter = null;
+    // wait for 5 seconds
+    ledRing?.pulse(color.color);
+    await Future.delayed(const Duration(seconds: 3));
+    await soundManager.playSound('sounds/color_sounds/${color.name}.mp3');
+    }
+
+  @override
+  void redButtonPressed() {
+    gameLogger.info('FarbenRaten Red Button Pressed!');
+    stop();
+  }
+
+  @override
+   void orangeButtonPressed() {
+    gameLogger.info('FarbenRaten Blue Button Pressed!');
+    _blueButtonCompleter?.complete();
+  }
+
+@override
+Future<void> play() async {
+  super.play();
+  gameLogger.info('FarbenRaten is being played!');
+
+  colorEntries = await loadColorEntries('assets/color_insults/colors.csv');
+  gameLogger.info("Loaded ${colorEntries.length} color entries");
+
+  await soundManager.playSound('sounds/games/farbenraten.mp3');
+  await soundManager.waitForSoundToFinish();
+}
+
+ColorEntry getRandomColor() {
+    int randomIndex = random.nextInt(colorEntries.length);
+    gameLogger.info('Random Index: $randomIndex');
+    gameLogger.info("length: ${colorEntries.length}");
+    return colorEntries[randomIndex];
   }
 }
 
@@ -166,7 +226,6 @@ class GuessTheNumber extends Game {
     LedRing? ledRing,
     void Function() stopCallback,
   ) : super(soundManager, ledRing, stopCallback);
-
   bool numberShown = true;
   int numberToDisplay = 0;
   Random random = Random();

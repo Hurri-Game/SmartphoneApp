@@ -6,7 +6,9 @@ final gameLogger = Logger('Game');
 final uiLogger = Logger('UI');
 
 void setupLogging() {
-  Logger.root.level = Level.WARNING; // Set the default logging level
+  Logger.root.level = Level.ALL; // Set the default logging level
+  hierarchicalLoggingEnabled = true;
+  bluetoothLogger.level = Level.WARNING;
   Logger.root.onRecord.listen((record) {
     // Format: [LEVEL] LOGGER_NAME: MESSAGE
     print('${record.level.name} ${record.loggerName}: ${record.message}');
