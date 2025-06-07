@@ -14,6 +14,7 @@ abstract class Game {
   final LedRing? ledRing;
   final void Function() stopCallback;
   bool _isStopped = false;
+  bool _buttonBlocked = false;
 
   void greenButtonPressed();
   void redButtonPressed();
@@ -25,6 +26,7 @@ abstract class Game {
 
   void stop() {
     _isStopped = true;
+    _buttonBlocked = false;
     soundManager.stopSound();
     ledRing?.setIdle();
     stopCallback();
@@ -129,16 +131,18 @@ class Roulette extends Game {
 
   @override
   void greenButtonPressed() {
-    gameLogger.info('Roulette Green Button Pressed!');
-    int waitTime = random.nextInt(5) + 5;
-    ledRing?.roulette(Colors.cyan);
-    // wait for waitTime seconds
-    Future.delayed(Duration(seconds: waitTime.toInt()), () {
-      if (!isStopped) {
-        ledRing?.freeze();
-        gameLogger.info('Roulette stopped!');
-      }
-    });
+    if (!_buttonBlocked) {
+      gameLogger.info('Roulette Green Button Pressed!');
+      int waitTime = random.nextInt(5) + 5;
+      ledRing?.roulette(Colors.cyan);
+      // wait for waitTime seconds
+      Future.delayed(Duration(seconds: waitTime.toInt()), () {
+        if (!isStopped) {
+          ledRing?.freeze();
+          gameLogger.info('Roulette stopped!');
+        }
+      });
+    }
   }
 
   @override
@@ -154,10 +158,12 @@ class Roulette extends Game {
 
   @override
   void play() async {
+    _buttonBlocked = true;
     super.play();
     gameLogger.info('Roulette is being played!');
     await soundManager.playSound('sounds/games/roulette.mp3');
     await soundManager.waitForSoundToFinish();
+    _buttonBlocked = false;
   }
 }
 
@@ -167,29 +173,36 @@ class FarbenRaten extends Game {
     LedRing? ledRing,
     void Function() stopCallback,
   ) : super(soundManager, ledRing, stopCallback);
-    Random random = Random();
+  Random random = Random();
   late final List<ColorEntry> colorEntries;
   bool showColor = true;
   ColorEntry currentColor = ColorEntry(name: 'white', color: Colors.white);
 
   @override
   Future<void> greenButtonPressed() async {
-    gameLogger.info('FarbenRaten Green Button Pressed!');
-    if (showColor) {
-      gameLogger.info('show random color');
-      currentColor = getRandomColor();
-      ledRing?.setColor(currentColor.color);
-      gameLogger.info('Random Color: $currentColor');
-      showColor = false;
-    } else {
-      gameLogger.info("hide color");
-      ledRing?.pulse(Colors.green);
-      await Future.delayed(const Duration(seconds: 3));
-      ledRing?.setColor(currentColor.color);
-      await soundManager.playSound('sounds/color_sounds/${currentColor.name}.mp3');
-      showColor = true;
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      gameLogger.info('FarbenRaten Green Button Pressed!');
+      if (showColor) {
+        gameLogger.info('show random color');
+        currentColor = getRandomColor();
+        ledRing?.setColor(currentColor.color);
+        gameLogger.info('Random Color: $currentColor');
+        showColor = false;
+      } else {
+        gameLogger.info("hide color");
+        ledRing?.pulse(Colors.green);
+        await Future.delayed(const Duration(seconds: 3));
+        ledRing?.setColor(currentColor.color);
+        await soundManager.playSound(
+          'sounds/color_sounds/${currentColor.name}.mp3',
+        );
+        showColor = true;
+        await soundManager.waitForSoundToFinish();
+      }
+      _buttonBlocked = false;
     }
-    }
+  }
 
   @override
   void redButtonPressed() {
@@ -198,37 +211,46 @@ class FarbenRaten extends Game {
   }
 
   @override
-   void orangeButtonPressed() async {
-    gameLogger.info('FarbenRaten Orange Button Pressed!');
-    if (showColor) {
-      gameLogger.info('show random color');
-      currentColor = getRandomColor();
-      ledRing?.setColor(currentColor.color);
-      gameLogger.info('Random Color: $currentColor');
-      showColor = false;
-    } else {
-      gameLogger.info("hide color");
-      ledRing?.pulse(Colors.orange);
-      await Future.delayed(const Duration(seconds: 3));
-      ledRing?.setColor(currentColor.color);
-      await soundManager.playSound('sounds/color_sounds/${currentColor.name}.mp3');
-      showColor = true;
+  void orangeButtonPressed() async {
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      gameLogger.info('FarbenRaten Orange Button Pressed!');
+      if (showColor) {
+        gameLogger.info('show random color');
+        currentColor = getRandomColor();
+        ledRing?.setColor(currentColor.color);
+        gameLogger.info('Random Color: $currentColor');
+        showColor = false;
+      } else {
+        gameLogger.info("hide color");
+        ledRing?.pulse(Colors.orange);
+        await Future.delayed(const Duration(seconds: 3));
+        ledRing?.setColor(currentColor.color);
+        await soundManager.playSound(
+          'sounds/color_sounds/${currentColor.name}.mp3',
+        );
+        showColor = true;
+        await soundManager.waitForSoundToFinish();
+      }
+      _buttonBlocked = false;
     }
   }
 
-@override
-Future<void> play() async {
-  super.play();
-  gameLogger.info('FarbenRaten is being played!');
+  @override
+  Future<void> play() async {
+    super.play();
+    _buttonBlocked = true;
+    gameLogger.info('FarbenRaten is being played!');
 
-  colorEntries = await loadColorEntries('assets/color_insults/colors.csv');
-  gameLogger.info("Loaded ${colorEntries.length} color entries");
+    colorEntries = await loadColorEntries('assets/color_insults/colors.csv');
+    gameLogger.info("Loaded ${colorEntries.length} color entries");
 
-  await soundManager.playSound('sounds/games/farbenraten.mp3');
-  await soundManager.waitForSoundToFinish();
-}
+    await soundManager.playSound('sounds/games/farbenraten.mp3');
+    await soundManager.waitForSoundToFinish();
+    _buttonBlocked = false;
+  }
 
-ColorEntry getRandomColor() {
+  ColorEntry getRandomColor() {
     int randomIndex = random.nextInt(colorEntries.length);
     gameLogger.info('Random Index: $randomIndex');
     gameLogger.info("length: ${colorEntries.length}");
@@ -247,23 +269,27 @@ class GuessTheNumber extends Game {
   Random random = Random();
 
   @override
-  void greenButtonPressed() {
-    print('GuessTheNumber Green Button Pressed!');
-    if (numberShown) {
-      print('show random leds');
-      numberToDisplay = random.nextInt(60);
-      ledRing?.randomNumber(Colors.cyan, numberToDisplay);
-      numberShown = false;
-    } else {
-      print("hide leds");
-      ledRing?.setColor(Colors.green);
-      numberShown = true;
-      Future.delayed(const Duration(seconds: 2), () {
+  void greenButtonPressed() async {
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      print('GuessTheNumber Green Button Pressed!');
+      if (numberShown) {
+        print('show random leds');
+        numberToDisplay = random.nextInt(60);
+        ledRing?.randomNumber(Colors.cyan, numberToDisplay);
+        numberShown = false;
+      } else {
+        print("hide leds");
+        ledRing?.setColor(Colors.green);
+        numberShown = true;
+        await Future.delayed(const Duration(seconds: 2));
         bluetoothLogger.info("Call out number");
-        soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
-      });
+        await soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
+        await soundManager.waitForSoundToFinish();
+      }
+      print('Random no. leds: $numberToDisplay');
+      _buttonBlocked = false;
     }
-    print('Random no. leds: $numberToDisplay');
   }
 
   @override
@@ -273,32 +299,38 @@ class GuessTheNumber extends Game {
   }
 
   @override
-  void orangeButtonPressed() {
-    print('GuessTheNumber Orange Button Pressed!');
-    if (numberShown) {
-      print('show random leds');
-      numberToDisplay = random.nextInt(60);
-      ledRing?.randomNumber(Colors.cyan, numberToDisplay);
-      numberShown = false;
-    } else {
-      print("hide leds");
-      ledRing?.setColor(Colors.orange);
-      numberShown = true;
-      Future.delayed(const Duration(seconds: 2), () {
+  void orangeButtonPressed() async {
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      print('GuessTheNumber Orange Button Pressed!');
+      if (numberShown) {
+        print('show random leds');
+        numberToDisplay = random.nextInt(60);
+        ledRing?.randomNumber(Colors.cyan, numberToDisplay);
+        numberShown = false;
+      } else {
+        print("hide leds");
+        ledRing?.setColor(Colors.orange);
+        numberShown = true;
+        await Future.delayed(const Duration(seconds: 2));
         bluetoothLogger.info("Call out number");
-        soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
-      });
+        await soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
+        await soundManager.waitForSoundToFinish();
+      }
+      print('Random no. leds: $numberToDisplay');
+      _buttonBlocked = false;
     }
-    print('Random no. leds: $numberToDisplay');
   }
 
   @override
   void play() async {
+    _buttonBlocked = true;
     super.play();
     print('GuessTheNumber is being played!');
     numberShown = true;
     await soundManager.playSound('sounds/games/lichterraten.mp3');
     await soundManager.waitForSoundToFinish();
+    _buttonBlocked = false;
   }
 }
 
@@ -313,19 +345,23 @@ class ChooseSide extends Game {
 
   @override
   void greenButtonPressed() {
-    print('ChooseSide Green Button Pressed!');
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      print('ChooseSide Green Button Pressed!');
 
-    Random random = Random();
-    int waitTime = random.nextInt(5) + 5;
+      Random random = Random();
+      int waitTime = random.nextInt(5) + 5;
 
-    ledRing?.setIdle();
-    ledRing?.shuffleSection(Colors.white);
-    Future.delayed(Duration(seconds: waitTime), () {
-      ledRing?.setSection(
-        Colors.red,
-        RingSection.values[random.nextInt(RingSection.values.length)],
-      );
-    });
+      ledRing?.setIdle();
+      ledRing?.shuffleSection(Colors.white);
+      Future.delayed(Duration(seconds: waitTime), () {
+        ledRing?.setSection(
+          Colors.red,
+          RingSection.values[random.nextInt(RingSection.values.length)],
+        );
+      });
+      _buttonBlocked = false;
+    }
   }
 
   @override
@@ -341,10 +377,12 @@ class ChooseSide extends Game {
 
   @override
   void play() async {
+    _buttonBlocked = true;
     super.play();
     print('ChooseSide is being played!');
     await soundManager.playSound('sounds/games/chooseside.mp3');
     await soundManager.waitForSoundToFinish();
+    _buttonBlocked = false;
   }
 }
 
