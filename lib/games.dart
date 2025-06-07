@@ -53,7 +53,7 @@ class Flunkyball extends Game {
 
   @override
   void orangeButtonPressed() {
-    gameLogger.info('Flunkyball Blue Button Pressed!');
+    gameLogger.info('Flunkyball Orange Button Pressed!');
   }
 
   @override
@@ -93,7 +93,7 @@ class RageCage extends Game {
 
   @override
   void orangeButtonPressed() {
-    gameLogger.info('RageCage Blue Button Pressed!');
+    gameLogger.info('RageCage Orange Button Pressed!');
   }
 
   @override
@@ -149,7 +149,7 @@ class Roulette extends Game {
 
   @override
   void orangeButtonPressed() {
-    gameLogger.info('Roulette Blue Button Pressed!');
+    gameLogger.info('Roulette Orange Button Pressed!');
   }
 
   @override
@@ -274,7 +274,7 @@ class GuessTheNumber extends Game {
 
   @override
   void orangeButtonPressed() {
-    print('GuessTheNumber Blue Button Pressed!');
+    print('GuessTheNumber Orange Button Pressed!');
     if (numberShown) {
       print('show random leds');
       numberToDisplay = random.nextInt(60);
@@ -282,7 +282,7 @@ class GuessTheNumber extends Game {
       numberShown = false;
     } else {
       print("hide leds");
-      ledRing?.setColor(Colors.blue);
+      ledRing?.setColor(Colors.orange);
       numberShown = true;
       Future.delayed(const Duration(seconds: 2), () {
         bluetoothLogger.info("Call out number");
