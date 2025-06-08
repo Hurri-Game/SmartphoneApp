@@ -60,10 +60,10 @@ class _BeatBreakerState extends State<BeatBreaker> {
 
   @override
   Widget build(BuildContext context) {
-    Widget screenWidget = ButtonScreen(switchScreen);
+    Widget screenWidget = ButtonScreen(switchScreen, ledRing: ledRing);
 
     if (activeScreen == 'button-screen') {
-      screenWidget = ButtonScreen(switchScreen);
+      screenWidget = ButtonScreen(switchScreen, ledRing: ledRing);
     } else if (activeScreen == 'settings-screen') {
       screenWidget = SettingsScreen(switchScreen);
     }
