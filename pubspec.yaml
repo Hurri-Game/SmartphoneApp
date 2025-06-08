@@ -416,6 +416,8 @@ flutter:
     - assets/sounds/challenges/RockPaperScissors.mp3
     - assets/sounds/challenges/StaringContest.mp3
     - assets/sounds/challenges/ThumbCatching.mp3
+    - assets/sounds/challenges/Dreisprung.mp3
+
 
 
   # To add assets to your application, add an assets section, like this:

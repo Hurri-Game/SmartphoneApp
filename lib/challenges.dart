@@ -500,3 +500,21 @@ class Race extends Challenge {
     gameLogger.info('Race stopped!');
   }
 }
+
+class Dreisprung extends Challenge {
+  Dreisprung(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  @override
+  void play() async {
+    // TODO: implement play
+    super.play();
+    await soundManager.playSound('sounds/challenges/Dreisprung.mp3');
+    gameLogger.info('Race is being played!');
+    await soundManager.waitForSoundToFinish();
+    stop();
+  }
+}
