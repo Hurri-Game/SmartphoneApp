@@ -102,7 +102,7 @@ class GameEngine {
         game?.orangeButtonPressed();
         break;
     }
-    gameLogger.info('Blue Button Pressed!');
+    gameLogger.info('Orange Button Pressed!');
   }
 
   Future<String?> getRandomSoundFile() async {
