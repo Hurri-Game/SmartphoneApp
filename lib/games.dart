@@ -21,7 +21,7 @@ abstract class Game {
   void orangeButtonPressed();
 
   void play() {
-    ledRing?.pulse(Colors.green);
+    ledRing?.pulse(const Color.fromARGB(255, 0, 255, 8));
   }
 
   void stop() {
