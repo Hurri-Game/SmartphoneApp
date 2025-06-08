@@ -32,6 +32,11 @@ abstract class Game {
     stopCallback();
   }
 
+  void playSoundAndWait(String file) async {
+    await soundManager.playSound(file);
+    await soundManager.waitForSoundToFinish();
+  }
+
   bool get isStopped => _isStopped;
 }
 
@@ -61,11 +66,13 @@ class Flunkyball extends Game {
   @override
   void play() async {
     super.play();
-    await soundManager.playSound('sounds/games/flunky-song.mp3');
     gameLogger.info('Flunkyball is being played!');
-    await soundManager.waitForSoundToFinish();
-    stopCallback();
-    gameLogger.info('Flunkyball stopped!');
+    playSoundAndWait('sounds/games/flunky-song.mp3');
+    // await soundManager.playSound();
+    // await soundManager.waitForSoundToFinish();
+    // stopCallback();
+    // gameLogger.info('Flunkyball stopped!');
+    stop();
   }
 
   @override
@@ -102,9 +109,10 @@ class RageCage extends Game {
   void play() async {
     gameLogger.info('RageCage is being played!');
     super.play();
-    await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
-    await soundManager.waitForSoundToFinish();
-    gameLogger.info('RageCage play before loop!');
+    // await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
+    // await soundManager.waitForSoundToFinish();
+    playSoundAndWait('sounds/games/rage_im_kaefig.mp3');
+    // gameLogger.fine('RageCage play before loop!');
     if (isStopped) {
       return;
     }
@@ -161,8 +169,9 @@ class Roulette extends Game {
     _buttonBlocked = true;
     super.play();
     gameLogger.info('Roulette is being played!');
-    await soundManager.playSound('sounds/games/roulette.mp3');
-    await soundManager.waitForSoundToFinish();
+    playSoundAndWait('sounds/games/roulette.mp3');
+    // await soundManager.playSound('sounds/games/roulette.mp3');
+    // await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
   }
 }
@@ -245,8 +254,9 @@ class FarbenRaten extends Game {
     colorEntries = await loadColorEntries('assets/color_insults/colors.csv');
     gameLogger.info("Loaded ${colorEntries.length} color entries");
 
-    await soundManager.playSound('sounds/games/farbenraten.mp3');
-    await soundManager.waitForSoundToFinish();
+    playSoundAndWait('sounds/games/farbenraten.mp3');
+    // await soundManager.playSound('sounds/games/farbenraten.mp3');
+    // await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
   }
 
@@ -328,8 +338,9 @@ class GuessTheNumber extends Game {
     super.play();
     print('GuessTheNumber is being played!');
     numberShown = true;
-    await soundManager.playSound('sounds/games/lichterraten.mp3');
-    await soundManager.waitForSoundToFinish();
+    playSoundAndWait('sounds/games/lichterraten.mp3');
+    // await soundManager.playSound('sounds/games/lichterraten.mp3');
+    // await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
   }
 }
@@ -380,8 +391,9 @@ class ChooseSide extends Game {
     _buttonBlocked = true;
     super.play();
     print('ChooseSide is being played!');
-    await soundManager.playSound('sounds/games/chooseside.mp3');
-    await soundManager.waitForSoundToFinish();
+    playSoundAndWait('sounds/games/chooseside.mp3');
+    // await soundManager.playSound('sounds/games/chooseside.mp3');
+    // await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
   }
 }
@@ -441,11 +453,12 @@ class Beerpong extends Game {
   @override
   void play() async {
     super.play();
-    await soundManager.playSound('sounds/games/olaf-bierpong.mp3');
+    // await soundManager.playSound('sounds/games/olaf-bierpong.mp3');
     gameLogger.info('Beerpong is being played!');
-    await soundManager.waitForSoundToFinish();
-    super.stop();
-    gameLogger.info('Beerpong stopped!');
+    // await soundManager.waitForSoundToFinish();
+    playSoundAndWait('sounds/games/olaf-bierpong.mp3');
+    stop();
+    // gameLogger.info('Beerpong stopped!');
   }
 
   @override
