@@ -278,7 +278,7 @@ class GuessTheNumber extends Game {
     LedRing? ledRing,
     void Function() stopCallback,
   ) : super(soundManager, ledRing, stopCallback);
-  bool numberShown = true;
+  // bool numberShown = true;
   int numberToDisplay = 0;
   Random random = Random();
 
@@ -286,29 +286,15 @@ class GuessTheNumber extends Game {
   void greenButtonPressed() async {
     if (!_buttonBlocked) {
       _buttonBlocked = true;
-      print('GuessTheNumber Green Button Pressed!');
-      if (numberShown) {
-        print('show random leds');
-        numberToDisplay = random.nextInt(60);
-        ledRing?.randomNumber(Colors.cyan, numberToDisplay);
-        numberShown = false;
-      } else {
-        print("hide leds");
-        ledRing?.setColor(Colors.green);
-        numberShown = true;
-        await Future.delayed(const Duration(seconds: 2));
-        bluetoothLogger.info("Call out number");
-        await soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
-        await soundManager.waitForSoundToFinish();
-      }
-      print('Random no. leds: $numberToDisplay');
+      gameLogger.info('GuessTheNumber Green Button Pressed!');
+      await runGuessTheNumber();
       _buttonBlocked = false;
     }
   }
 
   @override
   void redButtonPressed() {
-    print('GuessTheNumber Red Button Pressed!');
+    gameLogger.info('GuessTheNumber Red Button Pressed!');
     stop();
   }
 
@@ -316,22 +302,8 @@ class GuessTheNumber extends Game {
   void orangeButtonPressed() async {
     if (!_buttonBlocked) {
       _buttonBlocked = true;
-      print('GuessTheNumber Orange Button Pressed!');
-      if (numberShown) {
-        print('show random leds');
-        numberToDisplay = random.nextInt(60);
-        ledRing?.randomNumber(Colors.cyan, numberToDisplay);
-        numberShown = false;
-      } else {
-        print("hide leds");
-        ledRing?.setColor(Colors.orange);
-        numberShown = true;
-        await Future.delayed(const Duration(seconds: 2));
-        bluetoothLogger.info("Call out number");
-        await soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
-        await soundManager.waitForSoundToFinish();
-      }
-      print('Random no. leds: $numberToDisplay');
+      gameLogger.info('GuessTheNumber Orange Button Pressed!');
+      await runGuessTheNumber();
       _buttonBlocked = false;
     }
   }
@@ -340,11 +312,21 @@ class GuessTheNumber extends Game {
   void play() async {
     _buttonBlocked = true;
     super.play();
-    print('GuessTheNumber is being played!');
-    numberShown = true;
+    gameLogger.info('GuessTheNumber is being played!');
+    // numberShown = true;
     await soundManager.playSound('sounds/games/lichterraten.mp3');
     await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
+  }
+
+  Future<void> runGuessTheNumber() async {
+    numberToDisplay = random.nextInt(60);
+    gameLogger.info('Random no. leds: $numberToDisplay');
+    ledRing?.randomNumber(Colors.cyan, numberToDisplay);
+    await Future.delayed(const Duration(seconds: 5));
+    ledRing?.setColor(const Color.fromARGB(255, 255, 255, 255));
+    await soundManager.playSound('sounds/numbers/$numberToDisplay.mp3');
+    await soundManager.waitForSoundToFinish();
   }
 }
 
