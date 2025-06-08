@@ -122,48 +122,77 @@ class GameEngine {
     return randomFile;
   }
 
-  // games
+  static bool requiresLedRing(Games game) {
+    switch (game) {
+      case Games.roulette:
+      case Games.farbenraten:
+      case Games.guessTheNumber:
+      case Games.chooseSide:
+        return true;
+      default:
+        return false;
+    }
+  }
+
   Games getRandomGame() {
     final enabledGames = SettingsManager().getEnabledGames();
     if (enabledGames.isEmpty) {
       throw Exception("No games enabled");
     }
-    return enabledGames[random.nextInt(enabledGames.length)];
+
+    // Filter out games that require LED ring if it's not connected
+    final availableGames =
+        enabledGames.where((game) {
+          if (requiresLedRing(game)) {
+            return ledRing.isConnected;
+          }
+          return true;
+        }).toList();
+
+    if (availableGames.isEmpty) {
+      throw Exception("No available games (some require LED ring connection)");
+    }
+
+    return availableGames[random.nextInt(availableGames.length)];
   }
 
   void playRandomGame() {
-    currentGame = getRandomGame();
-    gameLogger.info("Next Game: $currentGame");
-    switch (currentGame) {
-      case Games.flunkyball:
-        game = Flunkyball(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.rageCage:
-        game = RageCage(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.roulette:
-        game = Roulette(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.farbenraten:
-        game = FarbenRaten(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.guessTheNumber:
-        game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.chooseSide:
-        game = ChooseSide(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.beerpong:
-        game = Beerpong(soundManager, ledRing, idleGameEngine);
-        break;
-      case Games.shortGames:
-        game = ShortDrinkingGame(soundManager, ledRing, idleGameEngine);
-      default:
-        gameLogger.warning("Game $currentGame is not implemented yet.");
+    try {
+      currentGame = getRandomGame();
+      gameLogger.info("Next Game: $currentGame");
+      switch (currentGame) {
+        case Games.flunkyball:
+          game = Flunkyball(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.rageCage:
+          game = RageCage(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.roulette:
+          game = Roulette(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.farbenraten:
+          game = FarbenRaten(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.guessTheNumber:
+          game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.chooseSide:
+          game = ChooseSide(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.beerpong:
+          game = Beerpong(soundManager, ledRing, idleGameEngine);
+          break;
+        case Games.shortGames:
+          game = ShortDrinkingGame(soundManager, ledRing, idleGameEngine);
+        default:
+          gameLogger.warning("Game $currentGame is not implemented yet.");
+      }
+      currentEngineState = EngineState.gameRunning;
+      //game = ChooseSide(soundManager, ledRing, idleGameEngine);  // only for testing always the same game
+      game?.play();
+    } catch (e) {
+      gameLogger.warning("Could not start game: $e");
     }
-    currentEngineState = EngineState.gameRunning;
-    //game = ChooseSide(soundManager, ledRing, idleGameEngine);  // only for testing always the same game
-    game?.play();
   }
 
   // challenges
@@ -176,61 +205,65 @@ class GameEngine {
   }
 
   void playRandomChallenge() {
-    currentChallenge = getRandomChallenge();
-    gameLogger.info("Next Challenge: $currentChallenge");
-    switch (currentChallenge) {
-      case Challenges.armPress:
-        game = ArmPress(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.thumbCatching:
-        game = ThumbCatching(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.canThrowing:
-        game = CanThrowing(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.highJump:
-        game = HighJump(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.bowling:
-        game = Bowling(soundManager, ledRing, idleGameEngine);
-        break;
-      /*
-      case Challenges.pushUps:
-        game = PushUps(soundManager, ledRing, idleGameEngine);
-        break;
-      */
-      case Challenges.holdYourBreath:
-        game = HoldYourBreath(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.measurePromille:
-        game = MeasurePromille(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.quiz:
-        game = Quiz(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.rockPaperScissors:
-        game = RockPaperScissors(soundManager, ledRing, idleGameEngine);
-        break;
-      /*
-      case Challenges.staringContest:
-        game = StaringContest(soundManager, ledRing, idleGameEngine);
-        break;
-      */
-      case Challenges.race:
-        game = Race(soundManager, ledRing, idleGameEngine);
-        break;
-      case Challenges.dreisprung:
-        game = Dreisprung(soundManager, ledRing, idleGameEngine);
-      default:
-        throw Exception("Game $currentChallenge is not implemented yet.");
+    try {
+      currentChallenge = getRandomChallenge();
+      gameLogger.info("Next Challenge: $currentChallenge");
+      switch (currentChallenge) {
+        case Challenges.armPress:
+          game = ArmPress(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.thumbCatching:
+          game = ThumbCatching(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.canThrowing:
+          game = CanThrowing(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.highJump:
+          game = HighJump(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.bowling:
+          game = Bowling(soundManager, ledRing, idleGameEngine);
+          break;
+        /*
+        case Challenges.pushUps:
+          game = PushUps(soundManager, ledRing, idleGameEngine);
+          break;
+        */
+        case Challenges.holdYourBreath:
+          game = HoldYourBreath(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.measurePromille:
+          game = MeasurePromille(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.quiz:
+          game = Quiz(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.rockPaperScissors:
+          game = RockPaperScissors(soundManager, ledRing, idleGameEngine);
+          break;
+        /*
+        case Challenges.staringContest:
+          game = StaringContest(soundManager, ledRing, idleGameEngine);
+          break;
+        */
+        case Challenges.race:
+          game = Race(soundManager, ledRing, idleGameEngine);
+          break;
+        case Challenges.dreisprung:
+          game = Dreisprung(soundManager, ledRing, idleGameEngine);
+        default:
+          throw Exception("Game $currentChallenge is not implemented yet.");
+      }
+      currentEngineState = EngineState.gameRunning;
+      // game = Race(
+      //   soundManager,
+      //   ledRing,
+      //   idleGameEngine,
+      // ); // only for testing always the same game
+      game?.play();
+    } catch (e) {
+      gameLogger.warning("Could not start challenge: $e");
     }
-    currentEngineState = EngineState.gameRunning;
-    // game = Race(
-    //   soundManager,
-    //   ledRing,
-    //   idleGameEngine,
-    // ); // only for testing always the same game
-    game?.play();
   }
 
   void idleGameEngine() {

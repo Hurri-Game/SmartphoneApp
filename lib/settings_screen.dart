@@ -92,6 +92,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       GameEngine.getGameDisplayName(game),
                       style: const TextStyle(color: Colors.black),
                     ),
+                    subtitle:
+                        GameEngine.requiresLedRing(game)
+                            ? const Text(
+                              'Requires LED ring',
+                              style: TextStyle(color: Colors.red, fontSize: 12),
+                            )
+                            : null,
                     value: _settingsManager.isGameEnabled(game),
                     activeColor: Colors.black,
                     inactiveThumbColor: Colors.black,
