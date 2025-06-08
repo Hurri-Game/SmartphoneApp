@@ -340,45 +340,53 @@ class ChooseSide extends Game {
   Random random = Random();
 
   @override
-  void greenButtonPressed() {
+  void greenButtonPressed() async {
     if (!_buttonBlocked) {
       _buttonBlocked = true;
-      print('ChooseSide Green Button Pressed!');
-
-      Random random = Random();
-      int waitTime = random.nextInt(5) + 5;
-
-      ledRing?.setIdle();
-      ledRing?.shuffleSection(Colors.white);
-      Future.delayed(Duration(seconds: waitTime), () {
-        ledRing?.setSection(
-          Colors.red,
-          RingSection.values[random.nextInt(RingSection.values.length)],
-        );
-      });
+      gameLogger.info('ChooseSide Green Button Pressed!');
+      await runChooseSide();
       _buttonBlocked = false;
     }
   }
 
   @override
   void redButtonPressed() {
-    print('ChooseSide Red Button Pressed!');
+    gameLogger.info('ChooseSide Red Button Pressed!');
     stop();
   }
 
   @override
-  void orangeButtonPressed() {
-    print('ChooseSide Orange Button Pressed!');
+  void orangeButtonPressed() async {
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      gameLogger.info('ChooseSide Orange Button Pressed!');
+      await runChooseSide();
+      _buttonBlocked = false;
+    }
   }
 
   @override
   void play() async {
     _buttonBlocked = true;
     super.play();
-    print('ChooseSide is being played!');
+    gameLogger.info('ChooseSide is being played!');
     await soundManager.playSound('sounds/games/chooseside.mp3');
     await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
+  }
+
+  Future<void> runChooseSide() async {
+    Random random = Random();
+    int waitTime = random.nextInt(5) + 5;
+
+    ledRing?.setIdle();
+    ledRing?.shuffleSection(Colors.white);
+    await Future.delayed(Duration(seconds: waitTime), () {
+      ledRing?.setSection(
+        Colors.red,
+        RingSection.values[random.nextInt(RingSection.values.length)],
+      );
+    });
   }
 }
 
