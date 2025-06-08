@@ -61,11 +61,12 @@ class Flunkyball extends Game {
   @override
   void play() async {
     super.play();
-    await soundManager.playSound('sounds/games/flunky-song.mp3');
     gameLogger.info('Flunkyball is being played!');
+    await soundManager.playSound('sounds/games/flunky-song.mp3');
     await soundManager.waitForSoundToFinish();
-    stopCallback();
-    gameLogger.info('Flunkyball stopped!');
+    // stopCallback();
+    // gameLogger.info('Flunkyball stopped!');
+    stop();
   }
 
   @override
@@ -104,6 +105,7 @@ class RageCage extends Game {
     super.play();
     await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
     await soundManager.waitForSoundToFinish();
+    ledRing?.setIdle();
     gameLogger.info('RageCage play before loop!');
     if (isStopped) {
       return;
@@ -441,11 +443,11 @@ class Beerpong extends Game {
   @override
   void play() async {
     super.play();
-    await soundManager.playSound('sounds/games/olaf-bierpong.mp3');
     gameLogger.info('Beerpong is being played!');
+    await soundManager.playSound('sounds/games/olaf-bierpong.mp3');
     await soundManager.waitForSoundToFinish();
-    super.stop();
-    gameLogger.info('Beerpong stopped!');
+    stop();
+    // gameLogger.info('Beerpong stopped!');
   }
 
   @override
