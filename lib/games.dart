@@ -458,3 +458,63 @@ class Beerpong extends Game {
     gameLogger.info('Beerpong stopped!');
   }
 }
+
+class ShortDrinkingGame extends Game {
+  ShortDrinkingGame(
+    SoundManager soundManager,
+    LedRing? ledRing,
+    void Function() stopCallback,
+  ) : super(soundManager, ledRing, stopCallback);
+
+  final List<String> shortGames = [
+    "geradesitzen",
+    "geradestehen",
+    "huttragen",
+    "keinenhuttragen",
+    "keinesonnenbrilletragen",
+    "sonnenbrilletragen",
+    "trichter",
+    "zigarette",
+  ];
+
+  Random random = Random();
+
+  @override
+  void greenButtonPressed() {
+    gameLogger.info('SingleDrinkGame Green Button Pressed!');
+  }
+
+  @override
+  void redButtonPressed() {
+    gameLogger.info('SingleDrinkGame Red Button Pressed!');
+    stop();
+  }
+
+  @override
+  void orangeButtonPressed() {
+    gameLogger.info('SingleDrinkGame Orange Button Pressed!');
+  }
+
+  @override
+  void play() async {
+    super.play();
+    String nextGame = getRandomShortGame();
+    gameLogger.info("$nextGame is being played");
+    await soundManager.playSound("sounds/games/$nextGame.mp3");
+    await soundManager.waitForSoundToFinish();
+    stop();
+  }
+
+  String getRandomShortGame() {
+    return shortGames[random.nextInt(shortGames.length)];
+  }
+
+  //   - assets/sounds/games/geradesitzen.mp3
+  // - assets/sounds/games/geradestehen.mp3
+  // - assets/sounds/games/huttragen.mp3
+  // - assets/sounds/games/keinenhuttragen.mp3
+  // - assets/sounds/games/keinesonnenbrilletragen.mp3
+  // - assets/sounds/games/sonnenbrilletragen.mp3
+  // - assets/sounds/games/trichter.mp3
+  // - assets/sounds/games/zigarette.mp3
+}
