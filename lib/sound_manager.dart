@@ -31,54 +31,50 @@ class SoundManager {
   }
 
   Future<void> _configureAudioSession(String sessionType) async {
-
     if (sessionType == "silent") {
-      
       print("Config silent");
       await _audioPlayer.setAudioContext(
-      AudioContext(
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.playback,
-          options: {
-          
-          },
+        AudioContext(
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: {},
+          ),
+          android: AudioContextAndroid(
+            isSpeakerphoneOn: true,
+            stayAwake: true,
+            contentType: AndroidContentType.music,
+            usageType: AndroidUsageType.media,
+            audioFocus: AndroidAudioFocus.gainTransient,
+          ),
         ),
-        android: AudioContextAndroid(
-          isSpeakerphoneOn: true,
-          stayAwake: true,
-          contentType: AndroidContentType.music,
-          usageType: AndroidUsageType.media,
-          audioFocus: AndroidAudioFocus.gainTransient,
-        ),
-      ),
-    );
-    
+      );
     } else if (sessionType == "duck") {
       print("Config duck");
-            await _audioPlayer.setAudioContext(
-      AudioContext(
-        iOS: AudioContextIOS(
-          category: AVAudioSessionCategory.playback,
-          options: {
-            AVAudioSessionOptions.mixWithOthers,
-            AVAudioSessionOptions.duckOthers,
-          },
+      await _audioPlayer.setAudioContext(
+        AudioContext(
+          iOS: AudioContextIOS(
+            category: AVAudioSessionCategory.playback,
+            options: {
+              AVAudioSessionOptions.mixWithOthers,
+              AVAudioSessionOptions.duckOthers,
+            },
+          ),
+          android: AudioContextAndroid(
+            isSpeakerphoneOn: true,
+            stayAwake: true,
+            contentType: AndroidContentType.music,
+            usageType: AndroidUsageType.media,
+            audioFocus: AndroidAudioFocus.gainTransientMayDuck,
+          ),
         ),
-        android: AudioContextAndroid(
-          isSpeakerphoneOn: true,
-          stayAwake: true,
-          contentType: AndroidContentType.music,
-          usageType: AndroidUsageType.media,
-          audioFocus: AndroidAudioFocus.gainTransientMayDuck,
-        ),
-      ),
-    );
+      );
     }
-
-
   }
 
-  Future<void> playSound(String filename,{String sessionType="silent"}) async {
+  Future<void> playSound(
+    String filename, {
+    String sessionType = "silent",
+  }) async {
     // beep.mp3 must be declared in pubspec.yaml under assets:
     // assets/sounds/beep.mp3
     try {
@@ -91,7 +87,7 @@ class SoundManager {
 
   Future<void> stopSound() async {
     try {
-      await _audioPlayer.stop();
+      await _audioPlayer.release();
       await _deactivateAudioSession();
     } catch (e) {
       gameLogger.warning(e);
@@ -104,12 +100,13 @@ class SoundManager {
 
   Future<void> waitForSoundToFinish() async {
     while (isPlaying()) {
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 10));
     }
   }
 
   Future<void> loopSound(String filename) async {
     try {
+      await _configureAudioSession("silent");
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
       await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
@@ -120,7 +117,7 @@ class SoundManager {
   Future<void> stopLoop() async {
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.release);
-      await _audioPlayer.stop();
+      await _audioPlayer.release();
       await _deactivateAudioSession();
     } catch (e) {
       gameLogger.warning(e);
