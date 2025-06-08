@@ -6,6 +6,7 @@ import 'package:hurrigame/led_ring.dart';
 import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/data/action_buttons.dart';
 import 'package:hurrigame/settings_screen.dart';
+import 'package:hurrigame/settings_manager.dart';
 
 class BeatBreaker extends StatefulWidget {
   const BeatBreaker({super.key});
@@ -28,6 +29,9 @@ class _BeatBreakerState extends State<BeatBreaker> {
     super.initState();
     soundManager = SoundManager();
     soundManager.initState("silent");
+
+    // Initialize settings manager
+    SettingsManager().initialize();
 
     // Initialize buttons first, without callbacks
 

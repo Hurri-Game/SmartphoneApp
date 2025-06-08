@@ -55,7 +55,7 @@ class SettingsManager {
     if (savedSounds != null) {
       _enabledBullshitSounds = savedSounds.toSet();
     } else {
-      gameLogger.info('enable all bullshit sounds');
+      gameLogger.warning('enable all bullshit sounds');
       _enabledBullshitSounds = allBullshitSounds;
     }
   }
