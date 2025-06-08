@@ -131,7 +131,7 @@ class BluetoothManager {
       // setup subscription
       _scanSubscription = FlutterBluePlus.scanResults.listen(
         (results) {
-          bluetoothLogger.info(
+          bluetoothLogger.fine(
             "Scan results received: ${results.length} devices found",
           );
           if (results.isNotEmpty && !_connecting) {
@@ -139,14 +139,14 @@ class BluetoothManager {
               final device = result.device;
               final deviceName = device.platformName.trim();
               final rssi = result.rssi;
-              bluetoothLogger.info("Found Device: $deviceName (RSSI: $rssi)");
+              bluetoothLogger.fine("Found Device: $deviceName (RSSI: $rssi)");
 
               // Action Buttons
               for (var button in buttons) {
                 if (button.name == deviceName) {
                   // Check cooldown period
-                  final lastDetection = _lastDetectionTimes[deviceName];
-                  final now = DateTime.now();
+                  var lastDetection = _lastDetectionTimes[deviceName];
+                  var now = DateTime.now();
                   if (lastDetection == null ||
                       now.difference(lastDetection) > _cooldownDuration) {
                     button.onTap();
@@ -176,19 +176,37 @@ class BluetoothManager {
 
       if (!_connecting) {
         // needed to have the app open all the time on iOS (to be checked on android)
-        FlutterBluePlus.startScan();
+        FlutterBluePlus.startScan(
+          withNames: [
+            ledRing.name,
+            "GreenActionButton",
+            "RedActionButton",
+            "BlueActionButton",
+          ],
+          oneByOne: true,
+          continuousUpdates: true,
+        );
         // Resart scan periodically to prevent Android scan throttling
-        Future.delayed(const Duration(seconds: 1), () async {
-          await stopScan();
-          print("delayed start scan");
-          startScan();
-        });
+        // Future.delayed(const Duration(seconds: 1), () async {
+        //   await stopScan();
+        //   print("delayed start scan");
+        //   startScan();
+        // });
 
         if (FlutterBluePlus.isScanning == true) {
           bluetoothLogger.warning("Already scanning...");
         } else {
           bluetoothLogger.info("Starting initial scan...");
-          FlutterBluePlus.startScan(oneByOne: true, continuousUpdates: true);
+          FlutterBluePlus.startScan(
+            withNames: [
+              ledRing.name,
+              "GreenActionButton",
+              "RedActionButton",
+              "BlueActionButton",
+            ],
+            oneByOne: true,
+            continuousUpdates: true,
+          );
         }
       }
     } catch (e, stackTrace) {
