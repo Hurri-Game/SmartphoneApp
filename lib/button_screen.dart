@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:hurrigame/data/action_buttons.dart';
+import 'package:hurrigame/bluetooth_manager.dart';
+import 'package:hurrigame/led_ring.dart';
 
 final GlobalKey<_ButtonScreenState> connectionKey =
     GlobalKey<_ButtonScreenState>();
 
 class ButtonScreen extends StatefulWidget {
-  ButtonScreen(this.switchScreen, {Key? key}) : super(key: connectionKey);
+  ButtonScreen(this.switchScreen, {Key? key, required this.ledRing})
+    : super(key: connectionKey);
 
   final void Function(String screenName) switchScreen;
+  final LedRing ledRing;
 
   @override
   State<ButtonScreen> createState() {
@@ -18,7 +22,14 @@ class ButtonScreen extends StatefulWidget {
 class _ButtonScreenState extends State<ButtonScreen> {
   var ringStatusColor = Colors.black;
 
-  void setConnectedIndicator(var connected) {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the color based on the LED ring's connection status
+    ringStatusColor = widget.ledRing.isConnected ? Colors.green : Colors.black;
+  }
+
+  void setConnectedIndicator(bool connected) {
     setState(() {
       ringStatusColor = connected ? Colors.green : Colors.black;
     });
@@ -41,7 +52,7 @@ class _ButtonScreenState extends State<ButtonScreen> {
           ),
         ),
 
-        // Bottom-right icon
+        // LED Ring connection status icon
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
