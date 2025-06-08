@@ -31,6 +31,7 @@ enum Challenges {
   rockPaperScissors,
   //staringContest, // soundfile not working
   race,
+  dreisprung,
 }
 
 class GameEngine {
@@ -215,6 +216,8 @@ class GameEngine {
       case Challenges.race:
         game = Race(soundManager, ledRing, idleGameEngine);
         break;
+      case Challenges.dreisprung:
+        game = Dreisprung(soundManager, ledRing, idleGameEngine);
       default:
         throw Exception("Game $currentChallenge is not implemented yet.");
     }
@@ -274,6 +277,8 @@ class GameEngine {
         return "Rock Paper Scissors";
       case Challenges.race:
         return "Race";
+      case Challenges.dreisprung:
+        return "Dreisprung";
       default:
         return challenge.toString().split('.').last;
     }
