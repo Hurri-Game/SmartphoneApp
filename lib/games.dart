@@ -128,22 +128,16 @@ class Roulette extends Game {
     void Function() stopCallback,
   ) : super(soundManager, ledRing, stopCallback);
 
-  bool runRoulette = false;
+  // bool runRoulette = false;
   Random random = Random();
 
   @override
-  void greenButtonPressed() {
+  void greenButtonPressed() async {
     if (!_buttonBlocked) {
+      _buttonBlocked = true;
       gameLogger.info('Roulette Green Button Pressed!');
-      int waitTime = random.nextInt(5) + 5;
-      ledRing?.roulette(Colors.cyan);
-      // wait for waitTime seconds
-      Future.delayed(Duration(seconds: waitTime.toInt()), () {
-        if (!isStopped) {
-          ledRing?.freeze();
-          gameLogger.info('Roulette stopped!');
-        }
-      });
+      await runRoulette();
+      _buttonBlocked = false;
     }
   }
 
@@ -154,8 +148,13 @@ class Roulette extends Game {
   }
 
   @override
-  void orangeButtonPressed() {
-    gameLogger.info('Roulette Orange Button Pressed!');
+  void orangeButtonPressed() async {
+    if (!_buttonBlocked) {
+      _buttonBlocked = true;
+      gameLogger.info('Roulette Orange Button Pressed!');
+      await runRoulette();
+      _buttonBlocked = false;
+    }
   }
 
   @override
@@ -166,6 +165,19 @@ class Roulette extends Game {
     await soundManager.playSound('sounds/games/roulette.mp3');
     await soundManager.waitForSoundToFinish();
     _buttonBlocked = false;
+  }
+
+  Future<void> runRoulette() async {
+    int waitTime = random.nextInt(5) + 5;
+    gameLogger.info("Got $waitTime seconds in runRoulette");
+    ledRing?.roulette(Colors.cyan);
+    // wait for waitTime seconds
+    await Future.delayed(Duration(seconds: waitTime.toInt()), () {
+      if (!isStopped) {
+        ledRing?.freeze();
+        gameLogger.info('Roulette stopped!');
+      }
+    });
   }
 }
 
