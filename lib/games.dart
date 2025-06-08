@@ -446,7 +446,7 @@ class Beerpong extends Game {
   void play() async {
     super.play();
     gameLogger.info('Beerpong is being played!');
-    await soundManager.playSound('sounds/games/olaf-bierpong.mp3');
+    await soundManager.playSound('sounds/games/bierpong.mp3');
     await soundManager.waitForSoundToFinish();
     stop();
     // gameLogger.info('Beerpong stopped!');
