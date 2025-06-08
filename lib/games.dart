@@ -508,13 +508,4 @@ class ShortDrinkingGame extends Game {
   String getRandomShortGame() {
     return shortGames[random.nextInt(shortGames.length)];
   }
-
-  //   - assets/sounds/games/geradesitzen.mp3
-  // - assets/sounds/games/geradestehen.mp3
-  // - assets/sounds/games/huttragen.mp3
-  // - assets/sounds/games/keinenhuttragen.mp3
-  // - assets/sounds/games/keinesonnenbrilletragen.mp3
-  // - assets/sounds/games/sonnenbrilletragen.mp3
-  // - assets/sounds/games/trichter.mp3
-  // - assets/sounds/games/zigarette.mp3
 }

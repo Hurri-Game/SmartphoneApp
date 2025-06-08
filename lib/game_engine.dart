@@ -16,6 +16,7 @@ enum Games {
   roulette,
   farbenraten,
   beerpong,
+  shortGames,
 }
 
 enum Challenges {
@@ -155,6 +156,8 @@ class GameEngine {
       case Games.beerpong:
         game = Beerpong(soundManager, ledRing, idleGameEngine);
         break;
+      case Games.shortGames:
+        game = ShortDrinkingGame(soundManager, ledRing, idleGameEngine);
       default:
         gameLogger.warning("Game $currentGame is not implemented yet.");
     }
@@ -250,6 +253,8 @@ class GameEngine {
         return "Farbenraten";
       case Games.beerpong:
         return "Beerpong";
+      case Games.shortGames:
+        return "Schneller Suff";
       default:
         return game.toString().split('.').last;
     }
