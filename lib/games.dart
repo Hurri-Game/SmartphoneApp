@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,12 @@ class RageCage extends Game {
     if (isStopped) {
       return;
     }
-    await soundManager.loopSound('sounds/games/GoranBregovic_GasGas.mp3');
+
+    AudioPlayer loopPlayer = AudioPlayer();
+    loopPlayer.setReleaseMode(ReleaseMode.loop);
+    await loopPlayer.play(AssetSource('sounds/games/GoranBregovic_GasGas.mp3'));
+    await loopPlayer.dispose();
+    // await soundManager.loopSound('sounds/games/GoranBregovic_GasGas.mp3');
   }
 
   @override
