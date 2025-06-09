@@ -203,23 +203,7 @@ class FarbenRaten extends Game {
     if (!_buttonBlocked) {
       _buttonBlocked = true;
       gameLogger.info('FarbenRaten Green Button Pressed!');
-      if (showColor) {
-        gameLogger.info('show random color');
-        currentColor = getRandomColor();
-        ledRing?.setColor(currentColor.color);
-        gameLogger.info('Random Color: $currentColor');
-        showColor = false;
-      } else {
-        gameLogger.info("hide color");
-        ledRing?.pulse(Colors.green);
-        await Future.delayed(const Duration(seconds: 3));
-        ledRing?.setColor(currentColor.color);
-        await soundManager.playSound(
-          'sounds/color_sounds/${currentColor.name}.mp3',
-        );
-        showColor = true;
-        await soundManager.waitForSoundToFinish();
-      }
+      await runFarbenRaten();
       _buttonBlocked = false;
     }
   }
@@ -235,23 +219,7 @@ class FarbenRaten extends Game {
     if (!_buttonBlocked) {
       _buttonBlocked = true;
       gameLogger.info('FarbenRaten Orange Button Pressed!');
-      if (showColor) {
-        gameLogger.info('show random color');
-        currentColor = getRandomColor();
-        ledRing?.setColor(currentColor.color);
-        gameLogger.info('Random Color: $currentColor');
-        showColor = false;
-      } else {
-        gameLogger.info("hide color");
-        ledRing?.pulse(Colors.orange);
-        await Future.delayed(const Duration(seconds: 3));
-        ledRing?.setColor(currentColor.color);
-        await soundManager.playSound(
-          'sounds/color_sounds/${currentColor.name}.mp3',
-        );
-        showColor = true;
-        await soundManager.waitForSoundToFinish();
-      }
+      await runFarbenRaten();
       _buttonBlocked = false;
     }
   }
@@ -275,6 +243,26 @@ class FarbenRaten extends Game {
     gameLogger.info('Random Index: $randomIndex');
     gameLogger.info("length: ${colorEntries.length}");
     return colorEntries[randomIndex];
+  }
+
+  Future<void> runFarbenRaten() async {
+    if (showColor) {
+      gameLogger.info('show random color');
+      currentColor = getRandomColor();
+      ledRing?.setColor(currentColor.color);
+      gameLogger.info('Random Color: $currentColor');
+      showColor = false;
+    } else {
+      gameLogger.info("hide color");
+      ledRing?.pulse(Colors.white);
+      await Future.delayed(const Duration(seconds: 3));
+      ledRing?.setColor(currentColor.color);
+      await soundManager.playSound(
+        'sounds/color_sounds/${currentColor.name}.mp3',
+      );
+      showColor = true;
+      await soundManager.waitForSoundToFinish();
+    }
   }
 }
 
