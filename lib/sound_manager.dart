@@ -85,7 +85,7 @@ class SoundManager {
     // beep.mp3 must be declared in pubspec.yaml under assets:
     // assets/sounds/beep.mp3
     try {
-      await _configureAudioSession(sessionType);
+      // await _configureAudioSession(sessionType);
       await _audioPlayer.play(AssetSource(filename));
     } catch (e) {
       gameLogger.info(e);
