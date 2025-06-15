@@ -97,8 +97,20 @@ class SoundManager {
       await _audioPlayer.release();
       await _deactivateAudioSession();
     } catch (e) {
-      gameLogger.warning(e);
+      gameLogger.warning("Error stopping sound", e);
     }
+  }
+
+  Future<void> destroy() async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.release();
+      await _audioPlayer.dispose();
+      gameLogger.info("Audio player disposed successfully.");
+    } catch (e) {
+      gameLogger.warning("Error disposing audio player", e);
+    }
+    await _deactivateAudioSession();
   }
 
   bool isPlaying() {
