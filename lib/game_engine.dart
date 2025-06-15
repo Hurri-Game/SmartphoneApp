@@ -6,7 +6,7 @@ import 'package:hurrigame/challenges.dart';
 import 'package:hurrigame/utils/logger.dart';
 import 'package:hurrigame/settings_manager.dart';
 
-enum EngineState { idle, gameRunning }
+enum EngineState { idle, gameRunning, bullshitRunning }
 
 enum Games {
   chooseSide,
@@ -61,6 +61,7 @@ class GameEngine {
   void redButtonPressed() async {
     switch (currentEngineState) {
       case EngineState.idle:
+        currentEngineState = EngineState.bullshitRunning;
         ledRing.setRainbow();
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
@@ -74,9 +75,12 @@ class GameEngine {
         } else {
           gameLogger.info("Kein Sound gefunden.");
         }
+        currentEngineState = EngineState.idle;
         break;
       case EngineState.gameRunning:
         game?.redButtonPressed();
+        break;
+      case EngineState.bullshitRunning:
         break;
     }
     gameLogger.info('Red Button Pressed!');
@@ -91,6 +95,9 @@ class GameEngine {
       case EngineState.gameRunning:
         game?.greenButtonPressed();
         break;
+      case EngineState.bullshitRunning:
+        // Do nothing, we are already in bullshit mode
+        break;
     }
     gameLogger.info('Green Button Pressed!');
   }
@@ -102,6 +109,9 @@ class GameEngine {
         break;
       case EngineState.gameRunning:
         game?.orangeButtonPressed();
+        break;
+      case EngineState.bullshitRunning:
+        // Do nothing, we are already in bullshit mode
         break;
     }
     gameLogger.info('Orange Button Pressed!');
@@ -162,33 +172,33 @@ class GameEngine {
       gameLogger.info("Next Game: $currentGame");
       switch (currentGame) {
         case Games.flunkyball:
-          game = Flunkyball(soundManager, ledRing, idleGameEngine);
+          game = Flunkyball(ledRing, idleGameEngine);
           break;
         case Games.rageCage:
-          game = RageCage(soundManager, ledRing, idleGameEngine);
+          game = RageCage(ledRing, idleGameEngine);
           break;
         case Games.roulette:
-          game = Roulette(soundManager, ledRing, idleGameEngine);
+          game = Roulette(ledRing, idleGameEngine);
           break;
         case Games.farbenraten:
-          game = FarbenRaten(soundManager, ledRing, idleGameEngine);
+          game = FarbenRaten(ledRing, idleGameEngine);
           break;
         case Games.guessTheNumber:
-          game = GuessTheNumber(soundManager, ledRing, idleGameEngine);
+          game = GuessTheNumber(ledRing, idleGameEngine);
           break;
         case Games.chooseSide:
-          game = ChooseSide(soundManager, ledRing, idleGameEngine);
+          game = ChooseSide(ledRing, idleGameEngine);
           break;
         case Games.beerpong:
-          game = Beerpong(soundManager, ledRing, idleGameEngine);
+          game = Beerpong(ledRing, idleGameEngine);
           break;
         case Games.shortGames:
-          game = ShortDrinkingGame(soundManager, ledRing, idleGameEngine);
+          game = ShortDrinkingGame(ledRing, idleGameEngine);
         default:
           gameLogger.warning("Game $currentGame is not implemented yet.");
       }
       currentEngineState = EngineState.gameRunning;
-      //game = ChooseSide(soundManager, ledRing, idleGameEngine);  // only for testing always the same game
+      //game = ChooseSide(ledRing, idleGameEngine);  // only for testing always the same game
       game?.play();
     } catch (e) {
       gameLogger.warning("Could not start game: $e");
@@ -210,47 +220,47 @@ class GameEngine {
       gameLogger.info("Next Challenge: $currentChallenge");
       switch (currentChallenge) {
         case Challenges.armPress:
-          game = ArmPress(soundManager, ledRing, idleGameEngine);
+          game = ArmPress(ledRing, idleGameEngine);
           break;
         case Challenges.thumbCatching:
-          game = ThumbCatching(soundManager, ledRing, idleGameEngine);
+          game = ThumbCatching(ledRing, idleGameEngine);
           break;
         case Challenges.canThrowing:
-          game = CanThrowing(soundManager, ledRing, idleGameEngine);
+          game = CanThrowing(ledRing, idleGameEngine);
           break;
         case Challenges.highJump:
-          game = HighJump(soundManager, ledRing, idleGameEngine);
+          game = HighJump(ledRing, idleGameEngine);
           break;
         case Challenges.bowling:
-          game = Bowling(soundManager, ledRing, idleGameEngine);
+          game = Bowling(ledRing, idleGameEngine);
           break;
         /*
         case Challenges.pushUps:
-          game = PushUps(soundManager, ledRing, idleGameEngine);
+          game = PushUps(ledRing, idleGameEngine);
           break;
         */
         case Challenges.holdYourBreath:
-          game = HoldYourBreath(soundManager, ledRing, idleGameEngine);
+          game = HoldYourBreath(ledRing, idleGameEngine);
           break;
         case Challenges.measurePromille:
-          game = MeasurePromille(soundManager, ledRing, idleGameEngine);
+          game = MeasurePromille(ledRing, idleGameEngine);
           break;
         case Challenges.quiz:
-          game = Quiz(soundManager, ledRing, idleGameEngine);
+          game = Quiz(ledRing, idleGameEngine);
           break;
         case Challenges.rockPaperScissors:
-          game = RockPaperScissors(soundManager, ledRing, idleGameEngine);
+          game = RockPaperScissors(ledRing, idleGameEngine);
           break;
         /*
         case Challenges.staringContest:
-          game = StaringContest(soundManager, ledRing, idleGameEngine);
+          game = StaringContest(ledRing, idleGameEngine);
           break;
         */
         case Challenges.race:
-          game = Race(soundManager, ledRing, idleGameEngine);
+          game = Race(ledRing, idleGameEngine);
           break;
         case Challenges.dreisprung:
-          game = Dreisprung(soundManager, ledRing, idleGameEngine);
+          game = Dreisprung(ledRing, idleGameEngine);
         default:
           throw Exception("Game $currentChallenge is not implemented yet.");
       }

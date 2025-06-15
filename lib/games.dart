@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,18 @@ import 'package:hurrigame/utils/logger.dart';
 import 'package:hurrigame/utils/csv_colors.dart';
 
 abstract class Game {
-  Game(this.soundManager, this.ledRing, this.stopCallback);
+  Game(this.ledRing, this.stopCallback, {this.deactivateAfterPlayback = true}) {
+    soundManager = SoundManager(
+      deactivateAfterPlayback: deactivateAfterPlayback,
+    );
+    soundManager.initState('silent');
+    gameLogger.info('Game initialized with sound manager and led ring.');
+  }
 
-  final SoundManager soundManager;
+  // final SoundManager _soundManager;
+  final bool deactivateAfterPlayback;
+  late final SoundManager soundManager;
+
   final LedRing? ledRing;
   final void Function() stopCallback;
   bool _isStopped = false;
@@ -25,10 +33,14 @@ abstract class Game {
     ledRing?.pulse(const Color.fromARGB(255, 0, 255, 8));
   }
 
-  void stop() {
+  void stop() async {
+    if (_isStopped) {
+      gameLogger.info('Game is already stopped, returning early.');
+      return;
+    }
     _isStopped = true;
     _buttonBlocked = false;
-    soundManager.stopSound();
+    await soundManager.destroy();
     ledRing?.setIdle();
     stopCallback();
   }
@@ -37,11 +49,8 @@ abstract class Game {
 }
 
 class Flunkyball extends Game {
-  Flunkyball(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Flunkyball(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -78,11 +87,8 @@ class Flunkyball extends Game {
 }
 
 class RageCage extends Game {
-  RageCage(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  RageCage(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback, deactivateAfterPlayback: false);
 
   @override
   void greenButtonPressed() {
@@ -107,32 +113,25 @@ class RageCage extends Game {
     await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
     await soundManager.waitForSoundToFinish();
     ledRing?.setIdle();
-    gameLogger.info('RageCage play before loop!');
     if (isStopped) {
+      print("In is stopped, returning early");
       return;
     }
 
-    AudioPlayer loopPlayer = AudioPlayer();
-    loopPlayer.setReleaseMode(ReleaseMode.loop);
-    await loopPlayer.play(AssetSource('sounds/games/GoranBregovic_GasGas.mp3'));
-    await loopPlayer.dispose();
-    // await soundManager.loopSound('sounds/games/GoranBregovic_GasGas.mp3');
+    gameLogger.info('RageCage play before loop!');
+    await soundManager.loopSound('sounds/games/GoranBregovic_GasGas.mp3');
   }
 
   @override
   void stop() {
     super.stop();
-    soundManager.stopLoop();
     gameLogger.info('RageCage stopped!');
   }
 }
 
 class Roulette extends Game {
-  Roulette(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Roulette(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   // bool runRoulette = false;
   Random random = Random();
@@ -188,11 +187,8 @@ class Roulette extends Game {
 }
 
 class FarbenRaten extends Game {
-  FarbenRaten(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  FarbenRaten(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
   Random random = Random();
   late final List<ColorEntry> colorEntries;
   bool showColor = true;
@@ -267,11 +263,8 @@ class FarbenRaten extends Game {
 }
 
 class GuessTheNumber extends Game {
-  GuessTheNumber(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  GuessTheNumber(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
   // bool numberShown = true;
   int numberToDisplay = 0;
   Random random = Random();
@@ -325,11 +318,8 @@ class GuessTheNumber extends Game {
 }
 
 class ChooseSide extends Game {
-  ChooseSide(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ChooseSide(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   Random random = Random();
 
@@ -384,41 +374,9 @@ class ChooseSide extends Game {
   }
 }
 
-class Challenge extends Game {
-  Challenge(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
-
-  @override
-  void greenButtonPressed() {
-    print('Challenge Green Button Pressed!');
-  }
-
-  @override
-  void redButtonPressed() {
-    print('Challenge Red Button Pressed!');
-    stop();
-  }
-
-  @override
-  void orangeButtonPressed() {
-    print('Challenge Orange Button Pressed!');
-  }
-
-  @override
-  void play() {
-    ledRing?.pulse(Colors.orange);
-  }
-}
-
 class Beerpong extends Game {
-  Beerpong(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Beerpong(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -454,11 +412,8 @@ class Beerpong extends Game {
 }
 
 class ShortDrinkingGame extends Game {
-  ShortDrinkingGame(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ShortDrinkingGame(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   final List<String> shortGames = [
     "geradesitzen",

@@ -1,22 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:hurrigame/utils/logger.dart';
 
 class SoundManager {
-  SoundManager();
+  SoundManager({this.deactivateAfterPlayback = true});
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+  bool deactivateAfterPlayback;
   static const _audioControlChannel = MethodChannel(
     'com.example.audio_control',
   );
 
   void initState(String sessionType) {
     _audioPlayer.onPlayerComplete.listen((event) {
-      gameLogger.info(
-        "Audio playback complete. Now deactivating audio session.",
-      );
-      _deactivateAudioSession();
+      if (deactivateAfterPlayback) {
+        gameLogger.info(
+          "Audio playback complete. Now deactivating audio session.",
+        );
+        _deactivateAudioSession();
+      } else {
+        gameLogger.info(
+          "Deactivate after playback is false, not deactivating session.",
+        );
+        return;
+      }
     });
     _configureAudioSession(sessionType);
   }
@@ -90,8 +97,20 @@ class SoundManager {
       await _audioPlayer.release();
       await _deactivateAudioSession();
     } catch (e) {
-      gameLogger.warning(e);
+      gameLogger.warning("Error stopping sound", e);
     }
+  }
+
+  Future<void> destroy() async {
+    try {
+      await _audioPlayer.stop();
+      await _audioPlayer.release();
+      await _audioPlayer.dispose();
+      gameLogger.info("Audio player disposed successfully.");
+    } catch (e) {
+      gameLogger.warning("Error disposing audio player", e);
+    }
+    await _deactivateAudioSession();
   }
 
   bool isPlaying() {
@@ -99,28 +118,20 @@ class SoundManager {
   }
 
   Future<void> waitForSoundToFinish() async {
-    while (isPlaying()) {
-      await Future.delayed(const Duration(milliseconds: 10));
+    try {
+      await _audioPlayer.onPlayerStateChanged.first;
+    } catch (e) {
+      gameLogger.warning("Error waiting for sound to finish", e);
     }
   }
 
   Future<void> loopSound(String filename) async {
-    try {
-      await _configureAudioSession("silent");
-      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-      await _audioPlayer.play(AssetSource(filename));
-    } catch (e) {
-      gameLogger.warning(e);
-    }
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+    await playSound(filename);
   }
 
   Future<void> stopLoop() async {
-    try {
-      await _audioPlayer.setReleaseMode(ReleaseMode.release);
-      await _audioPlayer.release();
-      await _deactivateAudioSession();
-    } catch (e) {
-      gameLogger.warning(e);
-    }
+    await _audioPlayer.setReleaseMode(ReleaseMode.release);
+    await stopSound();
   }
 }

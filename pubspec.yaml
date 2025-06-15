@@ -31,7 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_blue_plus: ^1.31.16
-  audioplayers: ^6.1.2   # or latest version on pub.dev
+  audioplayers: ^6.4.0  # or latest version on pub.dev
   permission_handler: ^11.0.1  # or the latest version
   logging: ^1.2.0
   # The following adds the Cupertino Icons font to your application.

@@ -5,11 +5,8 @@ import 'package:hurrigame/led_ring.dart';
 import 'package:flutter/material.dart';
 
 class Challenge extends Game {
-  Challenge(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Challenge(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -34,11 +31,8 @@ class Challenge extends Game {
 }
 
 class ArmPress extends Challenge {
-  ArmPress(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ArmPress(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -73,11 +67,8 @@ class ArmPress extends Challenge {
 }
 
 class ThumbCatching extends Challenge {
-  ThumbCatching(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ThumbCatching(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -112,11 +103,8 @@ class ThumbCatching extends Challenge {
 }
 
 class CanThrowing extends Challenge {
-  CanThrowing(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  CanThrowing(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -151,11 +139,8 @@ class CanThrowing extends Challenge {
 }
 
 class HighJump extends Challenge {
-  HighJump(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  HighJump(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -190,11 +175,8 @@ class HighJump extends Challenge {
 }
 
 class Bowling extends Challenge {
-  Bowling(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Bowling(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -229,11 +211,8 @@ class Bowling extends Challenge {
 }
 
 class PushUps extends Challenge {
-  PushUps(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  PushUps(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -268,11 +247,8 @@ class PushUps extends Challenge {
 }
 
 class HoldYourBreath extends Challenge {
-  HoldYourBreath(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  HoldYourBreath(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -307,11 +283,8 @@ class HoldYourBreath extends Challenge {
 }
 
 class MeasurePromille extends Challenge {
-  MeasurePromille(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  MeasurePromille(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -346,11 +319,8 @@ class MeasurePromille extends Challenge {
 }
 
 class Quiz extends Challenge {
-  Quiz(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Quiz(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -385,11 +355,8 @@ class Quiz extends Challenge {
 }
 
 class RockPaperScissors extends Challenge {
-  RockPaperScissors(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  RockPaperScissors(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -424,11 +391,8 @@ class RockPaperScissors extends Challenge {
 }
 
 class StaringContest extends Challenge {
-  StaringContest(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  StaringContest(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -463,11 +427,8 @@ class StaringContest extends Challenge {
 }
 
 class Race extends Challenge {
-  Race(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Race(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -502,11 +463,8 @@ class Race extends Challenge {
 }
 
 class Dreisprung extends Challenge {
-  Dreisprung(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Dreisprung(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void play() async {

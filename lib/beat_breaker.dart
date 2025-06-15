@@ -28,7 +28,7 @@ class _BeatBreakerState extends State<BeatBreaker> {
   void initState() {
     super.initState();
     soundManager = SoundManager();
-    soundManager.initState("silent");
+    soundManager.initState("duck");
 
     // Initialize settings manager
     SettingsManager().initialize();
