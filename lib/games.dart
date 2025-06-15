@@ -374,32 +374,6 @@ class ChooseSide extends Game {
   }
 }
 
-class Challenge extends Game {
-  Challenge(LedRing? ledRing, void Function() stopCallback)
-    : super(ledRing, stopCallback);
-
-  @override
-  void greenButtonPressed() {
-    print('Challenge Green Button Pressed!');
-  }
-
-  @override
-  void redButtonPressed() {
-    print('Challenge Red Button Pressed!');
-    stop();
-  }
-
-  @override
-  void orangeButtonPressed() {
-    print('Challenge Orange Button Pressed!');
-  }
-
-  @override
-  void play() {
-    ledRing?.pulse(Colors.orange);
-  }
-}
-
 class Beerpong extends Game {
   Beerpong(LedRing? ledRing, void Function() stopCallback)
     : super(ledRing, stopCallback);
