@@ -8,12 +8,7 @@ import 'package:hurrigame/utils/logger.dart';
 import 'package:hurrigame/utils/csv_colors.dart';
 
 abstract class Game {
-  Game(
-    soundManager1,
-    this.ledRing,
-    this.stopCallback, {
-    this.deactivateAfterPlayback = true,
-  }) {
+  Game(this.ledRing, this.stopCallback, {this.deactivateAfterPlayback = true}) {
     soundManager = SoundManager(
       deactivateAfterPlayback: deactivateAfterPlayback,
     );
@@ -54,11 +49,8 @@ abstract class Game {
 }
 
 class Flunkyball extends Game {
-  Flunkyball(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Flunkyball(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -95,16 +87,8 @@ class Flunkyball extends Game {
 }
 
 class RageCage extends Game {
-  RageCage(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(
-        soundManager,
-        ledRing,
-        stopCallback,
-        deactivateAfterPlayback: false,
-      );
+  RageCage(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback, deactivateAfterPlayback: false);
 
   @override
   void greenButtonPressed() {
@@ -146,11 +130,8 @@ class RageCage extends Game {
 }
 
 class Roulette extends Game {
-  Roulette(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Roulette(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   // bool runRoulette = false;
   Random random = Random();
@@ -206,11 +187,8 @@ class Roulette extends Game {
 }
 
 class FarbenRaten extends Game {
-  FarbenRaten(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  FarbenRaten(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
   Random random = Random();
   late final List<ColorEntry> colorEntries;
   bool showColor = true;
@@ -285,11 +263,8 @@ class FarbenRaten extends Game {
 }
 
 class GuessTheNumber extends Game {
-  GuessTheNumber(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  GuessTheNumber(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
   // bool numberShown = true;
   int numberToDisplay = 0;
   Random random = Random();
@@ -343,11 +318,8 @@ class GuessTheNumber extends Game {
 }
 
 class ChooseSide extends Game {
-  ChooseSide(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ChooseSide(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   Random random = Random();
 
@@ -403,11 +375,8 @@ class ChooseSide extends Game {
 }
 
 class Challenge extends Game {
-  Challenge(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Challenge(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -432,11 +401,8 @@ class Challenge extends Game {
 }
 
 class Beerpong extends Game {
-  Beerpong(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  Beerpong(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   @override
   void greenButtonPressed() {
@@ -472,11 +438,8 @@ class Beerpong extends Game {
 }
 
 class ShortDrinkingGame extends Game {
-  ShortDrinkingGame(
-    SoundManager soundManager,
-    LedRing? ledRing,
-    void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ShortDrinkingGame(LedRing? ledRing, void Function() stopCallback)
+    : super(ledRing, stopCallback);
 
   final List<String> shortGames = [
     "geradesitzen",
