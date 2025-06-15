@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:hurrigame/sound_manager.dart';
 import 'package:hurrigame/led_ring.dart';
 import 'package:flutter/material.dart';
@@ -9,9 +8,23 @@ import 'package:hurrigame/utils/logger.dart';
 import 'package:hurrigame/utils/csv_colors.dart';
 
 abstract class Game {
-  Game(this.soundManager, this.ledRing, this.stopCallback);
+  Game(
+    soundManager1,
+    this.ledRing,
+    this.stopCallback, {
+    this.deactivateAfterPlayback = true,
+  }) {
+    soundManager = SoundManager(
+      deactivateAfterPlayback: deactivateAfterPlayback,
+    );
+    soundManager.initState('silent');
+    gameLogger.info('Game initialized with sound manager and led ring.');
+  }
 
-  final SoundManager soundManager;
+  // final SoundManager _soundManager;
+  final bool deactivateAfterPlayback;
+  late final SoundManager soundManager;
+
   final LedRing? ledRing;
   final void Function() stopCallback;
   bool _isStopped = false;
@@ -25,10 +38,14 @@ abstract class Game {
     ledRing?.pulse(const Color.fromARGB(255, 0, 255, 8));
   }
 
-  void stop() {
+  void stop() async {
+    if (_isStopped) {
+      gameLogger.info('Game is already stopped, returning early.');
+      return;
+    }
     _isStopped = true;
     _buttonBlocked = false;
-    soundManager.stopSound();
+    await soundManager.destroy();
     ledRing?.setIdle();
     stopCallback();
   }
@@ -82,7 +99,12 @@ class RageCage extends Game {
     SoundManager soundManager,
     LedRing? ledRing,
     void Function() stopCallback,
-  ) : super(soundManager, ledRing, stopCallback);
+  ) : super(
+        soundManager,
+        ledRing,
+        stopCallback,
+        deactivateAfterPlayback: false,
+      );
 
   @override
   void greenButtonPressed() {
@@ -107,22 +129,18 @@ class RageCage extends Game {
     await soundManager.playSound('sounds/games/rage_im_kaefig.mp3');
     await soundManager.waitForSoundToFinish();
     ledRing?.setIdle();
-    gameLogger.info('RageCage play before loop!');
     if (isStopped) {
+      print("In is stopped, returning early");
       return;
     }
 
-    AudioPlayer loopPlayer = AudioPlayer();
-    loopPlayer.setReleaseMode(ReleaseMode.loop);
-    await loopPlayer.play(AssetSource('sounds/games/GoranBregovic_GasGas.mp3'));
-    await loopPlayer.dispose();
-    // await soundManager.loopSound('sounds/games/GoranBregovic_GasGas.mp3');
+    gameLogger.info('RageCage play before loop!');
+    await soundManager.loopSound('sounds/games/GoranBregovic_GasGas.mp3');
   }
 
   @override
   void stop() {
     super.stop();
-    soundManager.stopLoop();
     gameLogger.info('RageCage stopped!');
   }
 }
