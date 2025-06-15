@@ -1,22 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:hurrigame/utils/logger.dart';
 
 class SoundManager {
-  SoundManager();
+  SoundManager({this.deactivateAfterPlayback = true});
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+  bool deactivateAfterPlayback;
   static const _audioControlChannel = MethodChannel(
     'com.example.audio_control',
   );
 
   void initState(String sessionType) {
     _audioPlayer.onPlayerComplete.listen((event) {
-      gameLogger.info(
-        "Audio playback complete. Now deactivating audio session.",
-      );
-      _deactivateAudioSession();
+      if (deactivateAfterPlayback) {
+        gameLogger.info(
+          "Audio playback complete. Now deactivating audio session.",
+        );
+        _deactivateAudioSession();
+      } else {
+        gameLogger.info(
+          "Deactivate after playback is false, not deactivating session.",
+        );
+        return;
+      }
     });
     _configureAudioSession(sessionType);
   }
