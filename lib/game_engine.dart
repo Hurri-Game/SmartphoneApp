@@ -6,7 +6,7 @@ import 'package:hurrigame/challenges.dart';
 import 'package:hurrigame/utils/logger.dart';
 import 'package:hurrigame/settings_manager.dart';
 
-enum EngineState { idle, gameRunning }
+enum EngineState { idle, gameRunning, bullshitRunning }
 
 enum Games {
   chooseSide,
@@ -61,6 +61,7 @@ class GameEngine {
   void redButtonPressed() async {
     switch (currentEngineState) {
       case EngineState.idle:
+        currentEngineState = EngineState.bullshitRunning;
         ledRing.setRainbow();
         String? soundFile =
             await getRandomSoundFile(); // Warten auf das Ergebnis
@@ -74,9 +75,12 @@ class GameEngine {
         } else {
           gameLogger.info("Kein Sound gefunden.");
         }
+        currentEngineState = EngineState.idle;
         break;
       case EngineState.gameRunning:
         game?.redButtonPressed();
+        break;
+      case EngineState.bullshitRunning:
         break;
     }
     gameLogger.info('Red Button Pressed!');
@@ -91,6 +95,9 @@ class GameEngine {
       case EngineState.gameRunning:
         game?.greenButtonPressed();
         break;
+      case EngineState.bullshitRunning:
+        // Do nothing, we are already in bullshit mode
+        break;
     }
     gameLogger.info('Green Button Pressed!');
   }
@@ -102,6 +109,9 @@ class GameEngine {
         break;
       case EngineState.gameRunning:
         game?.orangeButtonPressed();
+        break;
+      case EngineState.bullshitRunning:
+        // Do nothing, we are already in bullshit mode
         break;
     }
     gameLogger.info('Orange Button Pressed!');
