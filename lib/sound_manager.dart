@@ -114,22 +114,12 @@ class SoundManager {
   }
 
   Future<void> loopSound(String filename) async {
-    try {
-      await _configureAudioSession("silent");
-      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-      await _audioPlayer.play(AssetSource(filename));
-    } catch (e) {
-      gameLogger.warning(e);
-    }
+    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+    await playSound(filename);
   }
 
   Future<void> stopLoop() async {
-    try {
-      await _audioPlayer.setReleaseMode(ReleaseMode.release);
-      await _audioPlayer.release();
-      await _deactivateAudioSession();
-    } catch (e) {
-      gameLogger.warning(e);
-    }
+    await _audioPlayer.setReleaseMode(ReleaseMode.release);
+    await stopSound();
   }
 }
