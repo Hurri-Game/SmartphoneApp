@@ -99,8 +99,10 @@ class SoundManager {
   }
 
   Future<void> waitForSoundToFinish() async {
-    while (isPlaying()) {
-      await Future.delayed(const Duration(milliseconds: 10));
+    try {
+      await _audioPlayer.onPlayerStateChanged.first;
+    } catch (e) {
+      gameLogger.warning("Error waiting for sound to finish", e);
     }
   }
 
